@@ -1,7 +1,8 @@
 // src/SignupPopup.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../styles.css';
+import './signup.css';
+import '../popup.css'
 
 const SignupPopup = ({ show, onClose, onSuccess }) => {
     const [username, setUsername] = useState('');

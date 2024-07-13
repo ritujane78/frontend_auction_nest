@@ -1,0 +1,20 @@
+.signin-form div {
+    padding-bottom: 10px;
+  }
+  
+  .signin-button {
+    background-color: black;
+    cursor: pointer;
+    color: white;
+    padding: 5px 10px;
+  }
+  .registerText{
+    text-align: center;
+    margin-top: 50px;
+  }
+  #register{
+    color: white;
+    background-color: rgb(83, 2, 2);
+    padding: 5px 5px;
+    text-decoration: none;
+  }

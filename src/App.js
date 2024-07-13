@@ -1,8 +1,8 @@
 // src/App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import ProfilePage from './components/ProfilePage';
+import HomePage from './home/HomePage';
+import ProfilePage from './Profile/ProfilePage';
 import SignupPage from './Signup/SignupPage';
 
 function App() {

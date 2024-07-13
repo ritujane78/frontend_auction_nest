@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import axios from 'axios';
-import SignupPage from "../Signup/SignupPage";
-
+import './signin.css'
 const SigninPopup = ({show, onClose}) =>{
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
@@ -49,13 +48,10 @@ const SigninPopup = ({show, onClose}) =>{
                 <button className="signin-button" type="submit">Sign In</button>
             </form>
             {message && <p>{message}</p>}
-            <p className="register">Not a user yet? &nbsp;
-                <Link id="clickText" to="/signup">  Register!!</Link>
+            <p className="registerText">Not a user yet? &nbsp;
+                <Link id="register" to="/signup">  Register!!</Link>
             </p>
         </div>
-        <SignupPage 
-                onSuccess={handleSignupSuccess} 
-            />
     </div>
     )
 }

@@ -1,7 +1,7 @@
 // src/ImageBrowse.js
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
-import '../styles.css';
+import '../main.css';
 
 const ItemBrowse = forwardRef(({ onBidSubmit }, ref) => {
     const [images, setImages] = useState([]);

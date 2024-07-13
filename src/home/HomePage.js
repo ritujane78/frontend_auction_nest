@@ -1,10 +1,10 @@
 // src/App.js
 import React, { useState, useRef } from 'react';
 import SignupPopup from '../Signup/SignupPopup'
-import ItemBrowse from '../Sell/ItemBrowse';
-import ItemSellPopup from '../Sell/ItemSellPopup';
+import ItemBrowse from '../Auction/ItemBrowse';
+import ItemSellPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
-import '../styles.css';
+import './home.css';
 import { Link } from "react-router-dom";
 
 function HomePage() {
