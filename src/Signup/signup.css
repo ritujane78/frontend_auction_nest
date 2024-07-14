@@ -28,7 +28,7 @@ button.signupButton {
     padding-bottom: 10px;
   }
   .signupButton {
-    background-color: black;
+    background-color: #555;
     cursor: pointer;
     color: white;
     padding: 5px 10px;

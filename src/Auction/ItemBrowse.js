@@ -28,18 +28,25 @@ const ItemBrowse = forwardRef(({ onBidSubmit }, ref) => {
 
     const handleBidSubmit = async (itemId) => {
         const bidAmount = bidAmounts[itemId];
-        if (!bidAmount) {
-            alert('Please enter a bid amount.');
-            return;
-        }
+        const userId = localStorage.getItem("userId")
+        if(!userId){
+            alert("Please login first!")
 
-        const success = await onBidSubmit(itemId, bidAmount);
-        if (success) {
-            setBidAmounts({
-                ...bidAmounts,
-                [itemId]: ''
-            });
-            console.log(bidAmounts);
+            return;
+        } else {
+            if (!bidAmount) {
+                alert('Please enter a bid amount.');
+                return;
+            }
+
+            const success = await onBidSubmit(itemId, bidAmount);
+            if (success) {
+                setBidAmounts({
+                    ...bidAmounts,
+                    [itemId]: ''
+                });
+                console.log(bidAmounts);
+            }
         }
     };
 
@@ -48,9 +55,9 @@ const ItemBrowse = forwardRef(({ onBidSubmit }, ref) => {
             <div id="imagesContainer">
                 {images.map(imageData => (
                     <div key={imageData.id} className="image-card">
-                        <h3>{imageData.title}</h3>
                         <img src={`data:${imageData.type};base64,${imageData.image}`} alt={imageData.title} />
-                        <p>{imageData.description}</p>
+                        {/* <p className='title'>{imageData.title}</p> */}
+                        <p className='description'>{imageData.description}</p>
                         <div className="inline-elements">
                         <label htmlFor={`bid-${imageData.id}`}>Bid:</label>
                             <input

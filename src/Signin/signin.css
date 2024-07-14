@@ -3,7 +3,7 @@
   }
   
   .signin-button {
-    background-color: black;
+    background-color: #555;
     cursor: pointer;
     color: white;
     padding: 5px 10px;
@@ -14,7 +14,7 @@
   }
   #register{
     color: white;
-    background-color: rgb(83, 2, 2);
+    background-color: black;
     padding: 5px 5px;
     text-decoration: none;
   }
