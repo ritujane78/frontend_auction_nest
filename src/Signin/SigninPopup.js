@@ -14,7 +14,6 @@ const SigninPopup = ({ show, onClose, onSuccess }) => {
         try {
             const response = await axios.post('/user/signin', { username, password });
             setMessage(`Message: ${response.data.message}`);
-            // Optionally store userId for session management
             localStorage.setItem('userId', response.data.userId);
             localStorage.setItem('expirationTime', response.data.expirationTime);
             if (response.status === 200) {

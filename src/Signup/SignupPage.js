@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 // import '../styles.css';
 
@@ -11,7 +11,7 @@ const SignupPage = ({ onSuccess }) => {
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [message, setMessage] = useState('');
-
+    const navigate = useNavigate();
     const getCurrentDateTime = () => {
         const date = new Date();
         return date.toISOString().slice(0, 19).replace('T', ' ');
@@ -39,7 +39,7 @@ const SignupPage = ({ onSuccess }) => {
             setMessage(response.data.message);
             if (response.status === 200) {
                 setTimeout(() => {
-                    // onSuccess();
+                    navigate("/");
                     setMessage('');
                 }, 2000);
             }

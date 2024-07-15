@@ -75,8 +75,7 @@ function HomePage() {
             return;
         }
 
-        // Assuming user_id is available in your app's context or props
-        const user_id = parseInt(localStorage.getItem('userId')); // Replace with actual user ID
+        const user_id = parseInt(localStorage.getItem('userId')); 
 
         try {
             const response = await fetch('/bid/saveBid', {
@@ -90,6 +89,7 @@ function HomePage() {
                     bid_amount: bidAmount,
                 }),
             });
+            console.log(response);
 
             if (response.ok) {
                 alert('Bid placed successfully!');
@@ -111,7 +111,7 @@ function HomePage() {
         }
         setShowSellPopup(false);
     };
-    const handlelLogoutClick = () =>{
+    const handleLogoutClick = () =>{
         localStorage.removeItem('expirationTime');
         localStorage.removeItem('userId');
         
@@ -120,16 +120,19 @@ function HomePage() {
 
     return (
         <div className="App">
-            {signinSuccess ? (
-                <div className='button-container'>
-                    <Link id='clickText' to="/profile">Profile</Link>
-                    <p id="clickText" onClick={handleSellClick}>Auction</p>
-                    <p id='clickText' onClick={handlelLogoutClick}>Log out</p>
-
-                </div>
-            ) : (
-                <p id='clickText' onClick={handleSigninClick}>Sign in</p>
-            )}
+           <div className='button-container'>
+                {signinSuccess ? (
+                    <>
+                        <div className="left-buttons">
+                            <Link id='clickText' to="/profile">Profile</Link>
+                            <p id="clickText" onClick={handleSellClick}>Auction</p>
+                        </div>
+                        <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto' }}>Log out</p>
+                    </>
+                ) : (
+                    <p id='clickText' onClick={handleSigninClick}>Sign in</p>
+                )}
+            </div>
             <ItemSellPopup 
                 show={showSellPopup} 
                 onClose={handleSellClosePopup} 

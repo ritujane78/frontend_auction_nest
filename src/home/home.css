@@ -1,7 +1,28 @@
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .button-container {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: space-between; /* This ensures space between the elements */
+  width: 100%;
+  padding: 10px 20px;
+  box-sizing: border-box;
+}
+
+.button-container .left-buttons {
+  display: flex;
+  gap: 10px;
 }
 
 #clickText {
@@ -11,9 +32,9 @@
   border: 2px solid black;
   background-color: #555;
   text-align: center;
-  width: 5%;
-  padding: 10px 2px;
+  padding: 10px 20px;
   text-decoration: none;
-  margin-left: 20px;
+  margin: 0 10px;
+  border-radius: 5px;
 }
 
