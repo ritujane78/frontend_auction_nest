@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './auction.css';
-import '../popup.css'
+import '../popup.css';
+import AlertDialog from '../AlertDialog/AlertDialog';
 
 
 const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
@@ -13,8 +14,11 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     const [size, setSize] = useState('');
     const [currentPrice, setCurrentPrice] = useState('');
     const [auctionMessage, setAuctionMessage] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [messageAlert, setMessageAlert] = useState('');
 
     const handleUpload = async (e) => {
+        try {
         e.preventDefault();
         const formData = new FormData();
         formData.append('title', title);
@@ -30,11 +34,15 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
+
         
         if(response.status === 200){
             console.log(response.data.message);
-            setAuctionMessage(response.data.message);
-            alert('It  will take upto 2 days for auctioning to start and be shown at the Home Screen.')
+            setAuctionMessage("Item Uploaded Successfully");
+            setMessageAlert("Item Uploaded Successfully!");
+            handleShowAlert();
+            // alert('Some message');
+                // It  will take upto 2 days for auctioning to start and be shown at the Home Screen.
         }
         setTitle('');
         setDescription('');
@@ -43,13 +51,18 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         setSize('');
         setCurrentPrice('');
         setIsDonated('')
-        setTimeout(()=> {
-            setAuctionMessage('')
-        }, 1000);
+        setTimeout(()=> {    
+            setAuctionMessage('');
+            if (onItemSaved) {
+                onItemSaved();
+            }
+        }, 2000)
 
-        if (onItemSaved) {
-            onItemSaved();
+
+        } catch (error) {
+            setAuctionMessage(` Error saving the item: ${error.response.data.error}`);
         }
+        
     };
     if (!show) {
         return null;
@@ -61,11 +74,31 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     const handleSizeChange = (event) => {
         setSize(event.target.value);
     };
+    const handleCloseClick = () => {
+        setTitle('');
+        setDescription('');
+        setStartingPrice('');
+        setImage(null);
+        setSize('');
+        setCurrentPrice('');
+        setIsDonated('');    
+        setAuctionMessage('');
+        onClose();
+    }
+    
+  const handleShowAlert = () => {
+    setShowAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
 
     return (
         <div className="popup">
             <div className="popup-content">
-                <span className="close-btn" onClick={onClose}>&times;</span>
+                {/* <span className="close-btn" onClick={onClose}>&times;</span> */}
+                <span className="close-btn" onClick={handleCloseClick}>&times;</span>
                 <h1>Item</h1>
                 <form onSubmit={handleUpload}>
                     <label htmlFor="image">Select image to upload:</label>
@@ -102,11 +135,11 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <p>Donated:</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                     <label style={{ marginRight: '10px' }}>
-                        <input type="radio" value="true" checked={isDonated === 'true'} onChange={handleOptionChange} />
+                        <input type="radio" value="true" name="isDonatedOption" checked={isDonated === 'true'} onChange={handleOptionChange} required />
                         True
                     </label>
                     <label>
-                        <input type="radio" value="false" checked={isDonated === 'false'} onChange={handleOptionChange} />
+                        <input type="radio" value="false" name="isDonatedOption" checked={isDonated === 'false'} onChange={handleOptionChange} required />
                         False
                     </label>
                     </div>
@@ -114,8 +147,14 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                         Selected Option: {isDonated}
                     </div> */}
                     <button className="signin-button" type="submit">Submit</button>
+                    <div id="auctionMessage">{auctionMessage}</div>
                 </form>
-                <div id="auctionMessage">{auctionMessage}</div>
+                {showAlert && (
+                    <AlertDialog 
+                        message= {messageAlert}
+                        onClose={handleCloseAlert} 
+                    />
+            )}
             </div>
 
         </div>
