@@ -11,17 +11,33 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
 
     const fetchItems = async () => {
         const response = await axios.get('/item/items');
-        setItems(response.data);        
-    };
-    
+        // setItems(response.data);
+        setItems(response.data
+            .filter(item => {
+            const currentDate = new Date();
+            const auctionStartDate = new Date(item.auctionStart);
+            const auctionEndDate = new Date(item.auctionEnd);
+            return (currentDate > auctionStartDate && currentDate<auctionEndDate)
+        })
+        .filter((item)=>item.isDonated === filter)
+        .sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd)));        
 
-    const filteredItems = items.filter(item => item.isDonated === filter);
+    };
+
+    // const filteredItems = items
+    // .filter(item => {
+    //     const currentDate = new Date();
+    //     const auctionStartDate = new Date(item.auctionStart);
+    //     const auctionEndDate = new Date(item.auctionEnd);
+    //     return (currentDate > auctionStartDate && currentDate<auctionEndDate)
+    // })
+    // .filter((item)=>item.isDonated === filter)
+    // .sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
 
     useEffect(() => {
         fetchItems();
     }, [bidAmounts]);
 
- 
 
     useImperativeHandle(ref, () => ({
         fetchItems
@@ -37,7 +53,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
         const bidAmount = bidAmounts[itemId];
         const userId = localStorage.getItem("userId")
         if(!userId){
-            setMessageAlert("Please signin first!")
+            setMessageAlert("Please Signin first!")
             handleShowAlert();
 
             return;
@@ -65,7 +81,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
 
     return (
             <div id="imagesContainer">
-                {filteredItems.map(itemData => (
+                {items.map(itemData => (
                     <div key={itemData.id} className="item-card">
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} />
                         {/* <p className='title'>{itemData.title}</p> */}
