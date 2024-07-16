@@ -30,7 +30,6 @@ function HomePage() {
 
         if (expirationTime && currentTime < expirationTime) {
             setSigninSuccess(true);
-            console.log(expirationTime);
         } else {
             localStorage.removeItem('userId');
             localStorage.removeItem('expirationTime');

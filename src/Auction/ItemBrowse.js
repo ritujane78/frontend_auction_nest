@@ -1,4 +1,3 @@
-// src/ImageBrowse.js
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 import '../main.css';
@@ -12,8 +11,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
 
     const fetchItems = async () => {
         const response = await axios.get('/item/items');
-        setItems(response.data);
-        
+        setItems(response.data);        
     };
     
 
@@ -21,7 +19,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
 
     useEffect(() => {
         fetchItems();
-    }, [fetchItems]);
+    }, [bidAmounts]);
 
  
 
@@ -72,10 +70,12 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} />
                         {/* <p className='title'>{itemData.title}</p> */}
                         <p className='description'>{itemData.description}</p>
+                        
                         <p> Size: {itemData.size}</p>
-                        <p>Starting price: &pound;{itemData.startingPrice}</p>
-                        <p> Current Bid: &pound;{itemData.currentPrice?itemData.currentPrice:itemData.startingPrice}</p>
-
+                        <div className='bids'>
+                            <p>Starting price: &pound;{itemData.startingPrice}</p>
+                            <p> Current Bid: &pound;{itemData.currentPrice?itemData.currentPrice:itemData.startingPrice}</p>
+                        </div>
                         <div className="inline-elements">
                         <label htmlFor={`bid-${itemData.id}`}>Bid:</label>
                             <input

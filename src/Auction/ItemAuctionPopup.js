@@ -41,7 +41,6 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
             setAuctionMessage("Item Uploaded Successfully");
             setMessageAlert("Item Uploaded Successfully!");
             handleShowAlert();
-            // alert('Some message');
                 // It  will take upto 2 days for auctioning to start and be shown at the Home Screen.
         }
         setTitle('');
