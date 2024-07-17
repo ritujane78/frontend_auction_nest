@@ -10,10 +10,10 @@
 .item-card {
   border: 1px solid #ddd;
   background-color: white;
-  margin: 10px;
+  margin: 25px 10px;
   text-align: left;
   width: 226px;
-  height: 380px; /* Increased height for more content */
+  height: 400px; 
   box-sizing: border-box;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -46,6 +46,13 @@
     color: #333;
     margin: 5px 10px;
     font-size: 14px;
+  }
+  .timer {
+    color: rgb(106, 4, 4);
+    font-weight: 1000;
+    margin-top: -30px;
+    font-size: 25px;
+    text-align: center;
   }
   
   .inline-elements {
