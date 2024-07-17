@@ -4,7 +4,7 @@ import ItemSellPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import './home.css';
-import { Link , useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -14,8 +14,6 @@ function HomePage() {
     const [messageAlert, setMessageAlert] = useState('');
 
     const itemBrowseRef = useRef();
-    const navigate = useNavigate();
-
 
     useEffect(() => {
         checkLoginStatus();
@@ -56,7 +54,7 @@ function HomePage() {
     };
 
     const handleBidSubmit = async (item_id, bidAmount) => {
-        const user_id = parseInt(localStorage.getItem('userId')); 
+        const user_id = parseInt(localStorage.getItem('userId'));
 
         try {
             const response = await fetch('/bid/saveBid', {
@@ -77,10 +75,10 @@ function HomePage() {
                 // alert('Bid placed successfully!');
                 return true;
             }
-                setMessageAlert("Failed to Place Bid.")
-                handleShowAlert();
-                // alert('Failed to place bid.');
-                return false;
+            setMessageAlert("Failed to Place Bid.")
+            handleShowAlert();
+            // alert('Failed to place bid.');
+            return false;
         } catch (error) {
             console.error('Error Placing Bid:', error);
             setMessageAlert("Error Placing Bid.")
@@ -95,27 +93,27 @@ function HomePage() {
         }
         setShowSellPopup(false);
     };
-    const handleLogoutClick = () =>{
-        
+
+    const handleLogoutClick = () => {
         const userConfirmed = window.confirm("Are you sure you want to log out?");
-        if(userConfirmed){
+        if (userConfirmed) {
             localStorage.removeItem('expirationTime');
             localStorage.removeItem('userId');
             setSigninSuccess(false);
         }
-        
     }
+
     const handleShowAlert = () => {
         setShowAlert(true);
-      };
-    
-      const handleCloseAlert = () => {
+    };
+
+    const handleCloseAlert = () => {
         setShowAlert(false);
-      };
+    };
 
     return (
         <div className="App">
-           <div className='button-container'>
+            <div className='button-container'>
                 {signinSuccess ? (
                     <>
                         <div className="left-buttons">
@@ -128,27 +126,27 @@ function HomePage() {
                     <p id='clickText' onClick={handleSigninClick}>Sign in</p>
                 )}
             </div>
-            <ItemSellPopup 
-                show={showSellPopup} 
-                onClose={handleSellClosePopup} 
-                onItemSaved={handleItemSaved} 
-            />         
-            <SigninPopup 
-                show={showSigninPopup} 
-                onClose={handleSigninClosePopup} 
+            <ItemSellPopup
+                show={showSellPopup}
+                onClose={handleSellClosePopup}
+                onItemSaved={handleItemSaved}
+            />
+            <SigninPopup
+                show={showSigninPopup}
+                onClose={handleSigninClosePopup}
                 onSuccess={handleSigninSuccess}
             />
             <p className='items-heading'>Donated Items</p>
             <ItemBrowse ref={itemBrowseRef} onBidSubmit={handleBidSubmit} filter="true" />
-            <p className='items-heading'>Others</p>
+            <p className='items-heading'>Others</p> 
             <ItemBrowse ref={itemBrowseRef} onBidSubmit={handleBidSubmit} filter="false" />
-            
+
             {showAlert && (
-                    <AlertDialog 
-                        message= {messageAlert}
-                        onClose={handleCloseAlert} 
-                    />
-                 )}
+                <AlertDialog
+                    message={messageAlert}
+                    onClose={handleCloseAlert}
+                />
+            )}
         </div>
     );
 }

@@ -29,24 +29,21 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter }, ref, ) => {
         items.forEach(item => {
         const now = new Date();
         const endTime = new Date(item.auctionEnd);
-        const difference = endTime - now;
-        if (difference <= 0) {
-            // clearInterval(intervalId);
-            // setRemainingTime({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        } else {
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((difference / 1000 / 60) % 60);
-            // const seconds = Math.floor((difference / 1000) % 60);
-            item.days = days;
-            item.hours = hours;
-            item.minutes=minutes;
+            const difference = endTime - now;
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((difference / 1000 / 60) % 60);
+                // const seconds = Math.floor((difference / 1000) % 60);
+                item.days = days;
+                item.hours = hours;
+                item.minutes=minutes;
 
-        }
-    });
-}
+            }
+        });
+    }
     
-showTimer();
+    showTimer();
     useEffect(() => {
         fetchItems();
     }, [bidAmounts]);
@@ -65,8 +62,13 @@ showTimer();
     const handleBidSubmit = async (itemId) => {
         const bidAmount = bidAmounts[itemId];
         const userId = localStorage.getItem("userId")
+        // const minBidAmount = itemData.currentPrice?itemData.currentPrice:itemData.startingPrice;
         const minBidAmount = document.getElementById(`bid-${itemId}`).min;
-
+        if(bidAmount < parseInt(minBidAmount) + 0.5){
+            setMessageAlert(`Please place bid more than ${parseInt(minBidAmount) + 0.5}`);
+            handleShowAlert();
+            return;
+        }
         if(!userId){
             setMessageAlert("Please Signin first!")
             handleShowAlert();
@@ -74,11 +76,6 @@ showTimer();
         }
         if (!bidAmount) {
             setMessageAlert("Please Enter a Bid Amount.")
-            handleShowAlert();
-            return;
-        }
-        if(bidAmount < parseInt(minBidAmount) + 0.5){
-            setMessageAlert(`Please place bid more than ${parseInt(minBidAmount) + 0.5}`);
             handleShowAlert();
             return;
         }

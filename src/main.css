@@ -37,7 +37,7 @@ form label {
   margin-bottom: 5px;
 }
 
-form input {
+form input, form select {
   padding: 8px;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -45,5 +45,8 @@ form input {
 }
 h1 {
   text-align: center;
+}
+select{
+  margin-bottom: 20px;
 }
 

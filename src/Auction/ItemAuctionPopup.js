@@ -37,11 +37,8 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
 
         
         if(response.status === 200){
-            setAuctionMessage("Item Uploaded Successfully");
-            setMessageAlert("Item Uploaded Successfully! Ready for auction.");
-            handleShowAlert();
-                // It  will take upto 2 days for auctioning to start and be shown at the Home Screen.
-        }
+            setAuctionMessage("Item Uploaded Successfully. Ready for auction.");
+                  }
         setTitle('');
         setDescription('');
         setStartingPrice('');
@@ -65,7 +62,10 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     if (!show) {
         return null;
     }
-    const handleOptionChange = (event) => {
+    const handleCategoryChange = (event) => {
+        setTitle(event.target.value);
+    };
+    const handleIsDonatedChange = (event) => {
         setIsDonated(event.target.value);
       };
 
@@ -95,37 +95,45 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     return (
         <div className="popup">
             <div className="popup-content">
-                {/* <span className="close-btn" onClick={onClose}>&times;</span> */}
                 <span className="close-btn" onClick={handleCloseClick}>&times;</span>
                 <h1>Item</h1>
                 <form onSubmit={handleUpload}>
                     <label htmlFor="image">Select image to upload:</label>
                     <input type="file" name="image" id="image" onChange={(e) => setImage(e.target.files[0])} required /><br />
-                    <label htmlFor="title">Title:</label>
-                    <input type="text" name="title" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required /><br />
+                        <label htmlFor="categories">Category:</label>
+                        <select id="categories" value={title} onChange={handleCategoryChange} required>
+                            <option value="" disabled>Select an option</option>
+                            <option value="tshirt">Tshirt</option>
+                            <option value="pants">Pants</option>
+                            <option value="skirt">Skirt</option>
+                            <option value="dress">Dress</option>
+                            <option value="jacket">Jacket</option>
+                            <option value="sweater">Sweater</option>
+                            <option value="xothers">Others</option>
+                        </select>
                     <label htmlFor="description">Description:</label>
                     <textarea name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea><br />
-                    
-                    {/* <label htmlFor='currentPrice'>Current Price:</label>
-                    <input type='number' step='0.01' name="currentPrice" id='currentPrice' value={currentPrice} onChange={(e) => setCurrentPrice(e.target.value)} required /><br /> */}
-                    
                     <p style={{marginTop : '0px'}}>Size:</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <label style={{ marginRight: '10px' }}>
-                            <input type="radio" name="size" value="XS" checked={size === 'XS'} onChange={handleSizeChange} />
+                            <input type="radio" name="size" value="XS" checked={size === 'XS'} onChange={handleSizeChange} required/>
                             XS
                         </label>
                         <label style={{ marginRight: '10px' }}>
-                            <input type="radio" name="size" value="S" checked={size === 'S'} onChange={handleSizeChange} />
+                            <input type="radio" name="size" value="S" checked={size === 'S'} onChange={handleSizeChange}required />
                             S
                         </label>
                         <label style={{ marginRight: '10px' }}>
-                            <input type="radio" name="size" value="M" checked={size === 'M'} onChange={handleSizeChange} />
+                            <input type="radio" name="size" value="M" checked={size === 'M'} onChange={handleSizeChange} required/>
                             M
                         </label>
-                        <label>
-                            <input type="radio" name="size" value="L" checked={size === 'L'} onChange={handleSizeChange} />
+                        <label style={{marginRight: '10px'}}>
+                            <input type="radio" name="size" value="L" checked={size === 'L'} onChange={handleSizeChange} required/>
                             L
+                        </label>
+                        <label>
+                            <input type="radio" name="size" value="N/A" checked={size === 'N/A'} onChange={handleSizeChange}  required/>
+                            N/A
                         </label>
                     </div>
                     <label htmlFor='StartingPrice'>Starting price:</label>
@@ -133,17 +141,14 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <p>Donated:</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                     <label style={{ marginRight: '10px' }}>
-                        <input type="radio" value="true" name="isDonatedOption" checked={isDonated === 'true'} onChange={handleOptionChange} required />
+                        <input type="radio" value="true" name="isDonatedOption" checked={isDonated === 'true'} onChange={handleIsDonatedChange} required />
                         True
                     </label>
                     <label>
-                        <input type="radio" value="false" name="isDonatedOption" checked={isDonated === 'false'} onChange={handleOptionChange} required />
+                        <input type="radio" value="false" name="isDonatedOption" checked={isDonated === 'false'} onChange={handleIsDonatedChange} required />
                         False
                     </label>
                     </div>
-                    {/* <div>
-                        Selected Option: {isDonated}
-                    </div> */}
                     <button className="signin-button" type="submit">Submit</button>
                     <div id="auctionMessage">{auctionMessage}</div>
                 </form>
