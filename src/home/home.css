@@ -1,10 +1,9 @@
-
 .App {
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -38,11 +37,28 @@
   margin: 0 10px;
   border-radius: 5px;
 }
+
 .items-heading {
-  color: #555; 
-  font-size: 25px; 
-  text-decoration: underline;  
+  color: #555;
+  font-family: arial;
+  border: 2px solid white;
   padding: 10px;
- 
+  font-size: 24px;
+  margin-left: 25px;
+  width: 95%;
+  background-color: white;
 }
 
+.heading-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.sortBox {
+  text-align: end;
+  margin-right: 30px;
+}

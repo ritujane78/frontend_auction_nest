@@ -4,7 +4,7 @@ import ItemSellPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import './home.css';
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -12,8 +12,10 @@ function HomePage() {
     const [showSellPopup, setShowSellPopup] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
+    const [sortType, setSortType] = useState('byAuctionEnd'); // Default sort type
 
-    const itemBrowseRef = useRef();
+    const donatedItemBrowseRef = useRef();
+    const otherItemBrowseRef = useRef();
 
     useEffect(() => {
         checkLoginStatus();
@@ -70,26 +72,27 @@ function HomePage() {
             });
 
             if (response.ok) {
-                setMessageAlert("Bid Placed Successfully!")
+                setMessageAlert("Bid Placed Successfully!");
                 handleShowAlert();
-                // alert('Bid placed successfully!');
                 return true;
             }
-            setMessageAlert("Failed to Place Bid.")
+            setMessageAlert("Failed to Place Bid.");
             handleShowAlert();
-            // alert('Failed to place bid.');
             return false;
         } catch (error) {
             console.error('Error Placing Bid:', error);
-            setMessageAlert("Error Placing Bid.")
+            setMessageAlert("Error Placing Bid.");
             handleShowAlert();
             return false;
         }
     };
 
     const handleItemSaved = () => {
-        if (itemBrowseRef.current) {
-            itemBrowseRef.current.fetchItems();
+        if (donatedItemBrowseRef.current) {
+            donatedItemBrowseRef.current.fetchItems();
+        }
+        if (otherItemBrowseRef.current) {
+            otherItemBrowseRef.current.fetchItems();
         }
         setShowSellPopup(false);
     };
@@ -101,7 +104,7 @@ function HomePage() {
             localStorage.removeItem('userId');
             setSigninSuccess(false);
         }
-    }
+    };
 
     const handleShowAlert = () => {
         setShowAlert(true);
@@ -109,6 +112,10 @@ function HomePage() {
 
     const handleCloseAlert = () => {
         setShowAlert(false);
+    };
+
+    const handleSortChange = (event) => {
+        setSortType(event.target.value);
     };
 
     return (
@@ -136,10 +143,18 @@ function HomePage() {
                 onClose={handleSigninClosePopup}
                 onSuccess={handleSigninSuccess}
             />
+            <p className='sortBox'>Sort:
+            <select onChange={handleSortChange} className="sort-select">
+                <option value="byAuctionEnd">By Auction End Time</option>
+                <option value="byCurrentBid">By Current Bid</option>
+                <option value="bySize">By Size</option>
+                <option value="byCategory">By Category</option>
+            </select>
+            </p>
             <p className='items-heading'>Donated Items</p>
-            <ItemBrowse ref={itemBrowseRef} onBidSubmit={handleBidSubmit} filter="true" />
-            <p className='items-heading'>Others</p> 
-            <ItemBrowse ref={itemBrowseRef} onBidSubmit={handleBidSubmit} filter="false" />
+            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} filter="true" sortType={sortType} />
+            <p className='items-heading'>Others</p>
+            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} filter="false" sortType={sortType} />
 
             {showAlert && (
                 <AlertDialog
