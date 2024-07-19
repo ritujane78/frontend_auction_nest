@@ -20,9 +20,12 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
             })
             .filter(item => item.isDonated === filter);
 
-        const sortedItems = filteredItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
-        setItems(sortedItems);
-    }, [filter]);
+        // const sortedItems = filteredItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
+        // setItems(sortedItems);
+
+
+        handleSortChange(sortType, filteredItems);
+    }, [filter, sortType]);
 
     const showTimer = (itemsList) => {
         return itemsList.map(item => {
@@ -43,13 +46,13 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
 
     useEffect(() => {
         fetchItems();
-    }, [filter]);
+    }, [filter, fetchItems, bidAmounts]);
 
-    useEffect(() => {
-        if (sortType) {
-            handleSortChange(sortType);
-        }
-    }, [sortType]);
+    // useEffect(() => {
+    //     if (sortType) {
+    //         handleSortChange(sortType);
+    //     }
+    // }, [sortType]);
 
     useImperativeHandle(ref, () => ({
         fetchItems
@@ -100,8 +103,8 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
 
     const sizeOrder = ["xs", "s", "m", "l", "xl", "n/a"];
 
-    const handleSortChange = (sortType) => {
-        let sortedItems = [...items];
+    const handleSortChange = (sortType, itemsToSort = items) => {
+        let sortedItems = [...itemsToSort];
         if (sortType === "byAuctionEnd") {
             sortedItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
         }  else if (sortType === "byCurrentBidHToL") {
