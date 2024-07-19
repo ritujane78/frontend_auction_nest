@@ -7,6 +7,7 @@ import AlertDialog from '../AlertDialog/AlertDialog';
 
 const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
     const [startingPrice, setStartingPrice] = useState(' ');
     const [isDonated, setIsDonated] = useState(' ');
@@ -22,6 +23,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('title', title);
+        formData.append('category', category)
         formData.append('description', description);
         formData.append('image', image);
         formData.append("startingPrice", startingPrice);
@@ -40,6 +42,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
             setAuctionMessage("Item Uploaded Successfully. Ready for auction.");
                   }
         setTitle('');
+        setCategory('');
         setDescription('');
         setStartingPrice('');
         setImage(null);
@@ -63,7 +66,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         return null;
     }
     const handleCategoryChange = (event) => {
-        setTitle(event.target.value);
+        setCategory(event.target.value);
     };
     const handleIsDonatedChange = (event) => {
         setIsDonated(event.target.value);
@@ -101,7 +104,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <label htmlFor="image">Select image to upload:</label>
                     <input type="file" name="image" id="image" onChange={(e) => setImage(e.target.files[0])} required /><br />
                         <label htmlFor="categories">Category:</label>
-                        <select id="categories" value={title} onChange={handleCategoryChange} required>
+                        <select id="categories" value={category} onChange={handleCategoryChange} required>
                             <option value="" disabled>Select an option</option>
                             <option value="tshirt">Tshirt</option>
                             <option value="pants">Pants</option>
@@ -111,6 +114,8 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                             <option value="sweater">Sweater</option>
                             <option value="xothers">Others</option>
                         </select>
+                    <label htmlFor="title">Title:</label>
+                    <input type='text' name='title' id='title' value={title} onChange={(e) => setTitle(e.target.value)} required />
                     <label htmlFor="description">Description:</label>
                     <textarea name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea><br />
                     <p style={{marginTop : '0px'}}>Size:</p>
@@ -130,6 +135,10 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                         <label style={{marginRight: '10px'}}>
                             <input type="radio" name="size" value="L" checked={size === 'L'} onChange={handleSizeChange} required/>
                             L
+                        </label>
+                        <label style={{marginRight: '10px'}}>
+                            <input type="radio" name="size" value="XL" checked={size === 'XL'} onChange={handleSizeChange} required/>
+                            XL
                         </label>
                         <label>
                             <input type="radio" name="size" value="N/A" checked={size === 'N/A'} onChange={handleSizeChange}  required/>

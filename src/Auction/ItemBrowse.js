@@ -98,13 +98,13 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
         setShowAlert(false);
     };
 
-    const sizeOrder = ["xs", "s", "m", "l", "n/a"];
+    const sizeOrder = ["xs", "s", "m", "l", "xl", "n/a"];
 
     const handleSortChange = (sortType) => {
         let sortedItems = [...items];
         if (sortType === "byAuctionEnd") {
             sortedItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
-        }  else if (sortType === "byCurrentBid") {
+        }  else if (sortType === "byCurrentBidHToL") {
             sortedItems.sort((a, b) => {
                 const bidA = a.currentPrice || 0;
                 const bidB = b.currentPrice || 0;
@@ -118,11 +118,26 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
                     return bidB - bidA;
                 }
             });
+        }  else if (sortType === "byCurrentBidLToH") {
+            sortedItems.sort((a, b) => {
+                const bidA = a.currentPrice || 0;
+                const bidB = b.currentPrice || 0;
+                if (bidA === 0 && bidB === 0) {
+                    return parseFloat(a.startingPrice) - parseFloat(b.startingPrice);
+                } else if (bidA === 0) {
+                    return parseFloat(a.startingPrice) - bidB;
+                } else if (bidB === 0) {
+                    return bidA - parseFloat(b.startingPrice);
+                } else {
+                    return bidA - bidB;
+                }
+            });
         } else if (sortType === "bySize") {
             sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
-        } else if (sortType === "byCategory") {
-            sortedItems.sort((a, b) => a.title.localeCompare(b.title));
         }
+        //  else if (sortType === "byCategory") {
+        //     sortedItems.sort((a, b) => a.title.localeCompare(b.title));
+        // }
         setItems(sortedItems);
     };
 

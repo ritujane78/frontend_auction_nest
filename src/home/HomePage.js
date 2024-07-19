@@ -146,9 +146,10 @@ function HomePage() {
             <p className='sortBox'>Sort:
             <select onChange={handleSortChange} className="sort-select">
                 <option value="byAuctionEnd">By Auction End Time</option>
-                <option value="byCurrentBid">By Current Bid</option>
+                <option value="byCurrentBidHToL">By Current Bid (High to Low)</option>
+                <option value="byCurrentBidLToH">By Current Bid (Low to High)</option>
                 <option value="bySize">By Size</option>
-                <option value="byCategory">By Category</option>
+                {/* <option value="byCategory">By Category</option> */}
             </select>
             </p>
             <p className='items-heading'>Donated Items</p>

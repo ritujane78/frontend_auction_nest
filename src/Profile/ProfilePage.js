@@ -5,6 +5,7 @@ import './profile.css'
 const ProfilePage = () =>{
     return (
         <div>
+            
             <Link to="/">Go to Home</Link>
         </div>
     )
