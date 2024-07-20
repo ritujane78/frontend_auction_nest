@@ -112,7 +112,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                             <option value="dress">Dress</option>
                             <option value="jacket">Jacket</option>
                             <option value="sweater">Sweater</option>
-                            <option value="xothers">Others</option>
+                            <option value="others">Others</option>
                         </select>
                     <label htmlFor="title">Title:</label>
                     <input type='text' name='title' id='title' value={title} onChange={(e) => setTitle(e.target.value)} required />

@@ -5,6 +5,7 @@ import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import './home.css';
 import { Link } from "react-router-dom";
+import LogoComponent from '../Logo/LogoComponent';
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -120,14 +121,14 @@ function HomePage() {
 
     return (
         <div className="App">
+            
             <div className='button-container'>
+                <LogoComponent />
                 {signinSuccess ? (
                     <>
-                        <div className="left-buttons">
-                            <Link id='clickText' to="/profile">Profile</Link>
-                            <p id="clickText" onClick={handleSellClick}>Upload</p>
-                        </div>
-                        <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto' }}>Log out</p>
+                        <Link id='clickText' to="/profile">Profile</Link>
+                        <p id="clickText" onClick={handleSellClick}>Upload</p>
+                        <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '8%'}}>Log out</p>
                     </>
                 ) : (
                     <p id='clickText' onClick={handleSigninClick}>Sign in</p>

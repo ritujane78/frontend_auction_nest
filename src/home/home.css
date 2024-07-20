@@ -15,13 +15,16 @@
   align-items: center;
   justify-content: space-between; /* This ensures space between the elements */
   width: 100%;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   box-sizing: border-box;
 }
 
 .button-container .left-buttons {
   display: flex;
   gap: 10px;
+}
+.button-container p{
+  width: 7%;
 }
 
 #clickText {
@@ -34,27 +37,18 @@
   text-align: center;
   padding: 10px 20px;
   text-decoration: none;
-  margin: 0 10px;
+  margin: 20px 10px;
   border-radius: 5px;
 }
 
-.items-heading {
-  color: #555;
-  font-family: arial;
-  border: 2px solid white;
-  padding: 10px;
-  font-size: 24px;
-  margin-left: 25px;
-  width: 95%;
-  background-color: white;
-}
+
 
 .heading-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0 20px;
+  /* padding: 0 20px; */
   box-sizing: border-box;
 }
 

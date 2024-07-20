@@ -70,12 +70,20 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
         const userId = localStorage.getItem("userId");
         const minBidAmount = document.getElementById(`bid-${itemId}`).min;
         if (bidAmount < parseInt(minBidAmount) + 0.5) {
-            setMessageAlert(`Please place bid more than ${parseInt(minBidAmount) + 0.5}`);
+            setMessageAlert(`Please place a bid amount atleast \u00A3${parseInt(minBidAmount) + 0.5}`);
+            setBidAmounts({
+                ...bidAmounts,
+                [itemId]: ''
+            });
             handleShowAlert();
             return;
         }
         if (!userId) {
             setMessageAlert("Please Signin first!");
+            setBidAmounts({
+                ...bidAmounts,
+                [itemId]: ''
+            });
             handleShowAlert();
             return;
         }
