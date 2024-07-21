@@ -8,8 +8,11 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
     const [bidAmounts, setBidAmounts] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
+    const [loadingData, setLoadingData]= useState(true);
+    const [errorData, setErrorData] = useState(null);
 
     const fetchItems = useCallback(async () => {
+        try{
         const response = await axios.get('/item/items');
         const filteredItems = response.data
             .filter(item => {
@@ -20,11 +23,13 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
             })
             .filter(item => item.isDonated === filter);
 
-        // const sortedItems = filteredItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
-        // setItems(sortedItems);
-
-
         handleSortChange(sortType, filteredItems);
+        }catch(error){
+            console.error(`Error fetching data`, error);
+            setErrorData("Error fetching data");
+        }finally {
+            setLoadingData(false);
+        }
     }, [filter, sortType]);
 
     const showTimer = (itemsList) => {
@@ -70,7 +75,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
         const userId = localStorage.getItem("userId");
         const minBidAmount = document.getElementById(`bid-${itemId}`).min;
         if (bidAmount < parseInt(minBidAmount) + 0.5) {
-            setMessageAlert(`Please place a bid amount atleast \u00A3${parseInt(minBidAmount) + 0.5}`);
+            setMessageAlert(`Please place a bid amount of atleast \u00A3${parseInt(minBidAmount) + 0.5}`);
             setBidAmounts({
                 ...bidAmounts,
                 [itemId]: ''
@@ -154,6 +159,9 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
 
     const sortedAndTimedItems = showTimer(items);
 
+    if(loadingData)return <div>Loading...</div>;
+    if(errorData)return <div>{errorData}</div>
+
     return (
         <div>
             <div id="imagesContainer">
@@ -161,7 +169,8 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
                     <div key={itemData.id} className="item-card">
                         <h3 className='timer'>{itemData.days}D:{itemData.hours}H:{itemData.minutes}M</h3>
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} />
-                        <p className='description'>{itemData.description}</p>
+                        <p className='description' title={itemData.description}>
+                            {itemData.description.length> 36? `${itemData.description.slice(0,36)}...`: itemData.description}</p>
                         <p>Size: {itemData.size}</p>
                         <div className='bids'>
                             <p>Starting price: &pound;{itemData.startingPrice}</p>

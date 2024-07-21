@@ -6,43 +6,133 @@
 }
 .profile-details {
     padding: 10px;
+    font-variant: normal;
+    text-align: center;
 }
 
 .bids-container, .uploads-container {
     display: flex;
-    flex-wrap: wrap; /* Allows items to wrap to the next line if necessary */
-    gap: 16px; /* Adds some space between the items */
-    align-items: flex-start; /* Aligns items to the start */
+    flex-wrap: wrap; 
+    gap: 16px; 
+    align-items: flex-start; 
 }
 
-.bid-item, .upload-item {
+.bid-item {
     display: flex;
-    width: 7%;
-    height: 155px;
-    flex-direction: column; /* Stacks the image and the list vertically */
-    align-items: flex-start; /* Aligns content to the start */
+    width: 10%;
+    height: 200px;
+    flex-direction: column; 
+    align-items: flex-start; 
     padding: 10px;
-    border: 1px solid #ccc; /* Optional: Adds a border around each item */
-    border-radius: 8px; /* Optional: Adds rounded corners */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Adds a shadow effect */
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+}
+.win-item {
+    display: flex;
+    width: 10%;
+    height: 150px;
+    flex-direction: column; 
+    align-items: flex-start; 
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+}
+.upload-item {
+    display: flex;
+    width: 10%;
+    height: 150px;
+    flex-direction: column; 
+    align-items: flex-start; 
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
 }
 
-.bid-image, .upload-image {
-    width: 100px;
-    height: 100px; /* Ensures the image has a fixed size */
-    object-fit: cover; /* Ensures the image covers the fixed size without distortion */
+.bid-image {
+    width: 150px;
+    height: 100px; 
+    object-fit: cover; 
 }
 
-.bid-amounts, .upload-details {
+.win-image {
+    width: 150px;
+    height: 100px; 
+    object-fit: cover; 
+}
+.upload-image {
+    width: 150px;
+    height: 100px; 
+    object-fit: cover; 
+}
+.bid-amounts {
+    display: flex;
+    /* flex-wrap: wrap; */
+    flex-direction: column;
+    align-items: center;
+    /* gap: 8px; */
+    margin-top: 8px;
+    width: 100%;
+    cursor:auto;
+}
+
+.upload-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    /* flex-direction: column; */
+    align-items: center;
+    /* gap: 8px; */
     margin-top: 8px;
+    /* width: 100px; */
 }
 
-.bid-amounts span, .upload-details p {
-    width: 25%;
+.bid-amounts span  {
+    width: 100%;
     text-wrap: wrap;
     /* white-space: wrap;  */
+    text-align: center;
+    margin-bottom: 10px;
+}
+.win-amounts {
+    margin-top: 10px;
+    width: 100%;
+    text-wrap: wrap;
+    /* white-space: wrap;  */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.upload-details p {
+    width: 100%;
+    font-size: 15px;
+    /* font-variant: normal; */
+    margin: 0;
+    text-align: center;
+}
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.donated-tag {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background-color: #ff5e5e; 
+    color: white; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+    font-size: 12px; 
+}
+
+.auction-tag {
+    background-color: #aaa;
+    color: black;
+    padding: 0 5px;
+}
+.bid-details p{
+    margin: 0;
     text-align: center;
 }

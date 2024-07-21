@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './profile.css';
 import LogoComponent from "../Logo/LogoComponent";
+import { formatDate } from "../utils";
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState(null);
-    const [userBids, setUserBids] = useState({});
     const [userWins, setUserWins] = useState({});
-    const [userUploads, setUserUploads] = useState({})
+    const [userUploads, setUserUploads] = useState({});
+    const [sortedBids, setSortedBids] = useState([]);
     const [loading, setLoading] = useState({ profile: true, uploads: true, bids: true, wins: true });
     const [error, setError] = useState({ profile: null, uploads: null, bids: null, wins: null });
 
@@ -36,10 +37,20 @@ const ProfilePage = () => {
 
     useEffect(() => {
         fetchData(`/profile/user/${userId}`, setUserProfile, setError, 'profile');
-        fetchData(`/profile/user/${userId}/uploads`, setUserUploads, setError, 'uploads'); 
-        fetchData(`/profile/user/${userId}/bids`, setUserBids, setError, 'bids');
+        fetchData(`/profile/user/${userId}/uploads`, (data) => {
+            const sortedArray = data.sort((a,b) => new Date(b.auctionEnd)- new Date(a.auctionEnd));
+            setUserUploads(sortedArray)
+        }, setError, 'uploads'); 
+        fetchData(`/profile/user/${userId}/bids`, (data) => {
+            const sortedBidsArray = Object.entries(data)
+                .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
+            setSortedBids(sortedBidsArray);
+        }, setError, 'bids'); 
         fetchData(`/profile/user/${userId}/wins`, setUserWins, setError, 'wins');
     }, [fetchData, userId]);
+
+
+
     const handleLogoutClick = () => {
         const userConfirmed = window.confirm("Are you sure you want to log out?");
         if (userConfirmed) {
@@ -47,9 +58,7 @@ const ProfilePage = () => {
             localStorage.removeItem('userId');
             navigate("/");
         }
-
     }
-
 
     if (loading.profile || loading.bids || loading.uploads || loading.wins) return <div>Loading...</div>;
     if (error.profile) return <div>{error.profile}</div>;
@@ -64,7 +73,7 @@ const ProfilePage = () => {
                 <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '7%' }}>Log out</p>
             </div>
             {userProfile ? (
-        <div className="profile-details">
+                <div className="profile-details">
                     <h1>{userProfile.name}</h1>
                     <p>Username: {userProfile.username}</p>
                     <p>Email address: {userProfile.email}</p>
@@ -75,53 +84,63 @@ const ProfilePage = () => {
                 <div>No profile data found</div>
             )}
 
-            <h2 className='items-heading'>Uploads</h2> {/* Add this section for uploads */}
+            <h2 className='items-heading'>Uploads</h2>
             <div className="uploads-container">
                 {userUploads.length > 0 ? (
                     userUploads.map(upload => (
                         <div className="upload-item" key={upload.item_id}>
-                            <img className="upload-image" src={`data:${upload.image_type};base64,${upload.image}`} alt={`Item ${upload.item_id}`} />
+                            <div className="image-container">
+                                <img className="upload-image" src={`data:${upload.image_type};base64,${upload.image}`} alt={`Item ${upload.item_id}`} />
+                                {upload.isDonated==="true" && <span className="donated-tag">DONATED</span>}
+                            </div>
                             <div className="upload-details">
-                                <p>{upload.category}</p>
-                                {/* <p>Description: {upload.description}</p> */}
+                                <p className="auction-tag">auction end date</p>
+                                <p> {formatDate(upload.auctionEnd)}</p>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <div>No uploads,yet.</div>
+                    <div>No uploads, yet.</div>
                 )}
             </div>
 
             <h2 className='items-heading'>Bids</h2>
             <div className="bids-container">
-                {Object.keys(userBids).length > 0 ? (
-                    Object.keys(userBids).map(itemId => (
-                        <div className="bid-item" key={itemId}>
-                            <img className="bid-image" src={`data:${userBids[itemId].itemDetails.image_type};base64,${userBids[itemId].itemDetails.image}`} alt={`Item ${itemId}`} />
-                            <div className="bid-amounts">
-                                {userBids[itemId].bids.map((bid, index) => (
-                                    <span key={bid.bid_id}>
-                                        &pound;{bid.bid_amount}{index < userBids[itemId].bids.length - 1 ? ', ' : ''}
-                                    </span>
-                                ))}
+                {sortedBids.length > 0 ? (
+                    sortedBids.map(([itemId, bidData]) => {
+                        const sortedBidAmounts = bidData.bids.length >1 ? bidData.bids.sort((a,b) => b.bid_amount - a.bid_amount): bidData.bids;
+                        const bidAmounts = sortedBidAmounts.map((bid) => `£${bid.bid_amount}`).join(', ');
+                        const truncatedBidAmounts = bidAmounts.length > 15 ? `${bidAmounts.slice(0, 15)}...` : bidAmounts;
+
+                        return (
+                            <div className="bid-item" key={itemId}>
+                                <div className="image-container">
+                                    <img className="bid-image" src={`data:${bidData.itemDetails.image_type};base64,${bidData.itemDetails.image}`} alt={`Item ${itemId}`} />
+                                </div>
+                                <div className="bid-details">
+                                    <div className="bid-amounts" title={bidAmounts}>
+                                        {truncatedBidAmounts}
+                                    </div>
+                                    <p className="auction-tag">auction end date</p>
+                                    <p>{formatDate(bidData.auctionEnd)}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        );
+                    })
                 ) : (
                     <div>No bids, yet.</div>
                 )}
             </div>
-
             <h2 className='items-heading'>Wins</h2>
-            <div className="bids-container">
+            <div className="wins-container">
                 {Object.keys(userWins).length > 0 ? (
                     Object.keys(userWins).map(itemId => (
-                        <div className="bid-item" key={itemId}>
-                            <img className="bid-image" src={`data:${userWins[itemId].itemDetails.image_type};base64,${userWins[itemId].itemDetails.image}`} alt={`Item ${itemId}`} />
-                            <div className="bid-amounts">
+                        <div className="win-item" key={itemId}>
+                            <img className="win-image" src={`data:${userWins[itemId].itemDetails.image_type};base64,${userWins[itemId].itemDetails.image}`} alt={`Item ${itemId}`} />
+                            <div className="win-amounts">
                                 {userWins[itemId].bids.map((win, index) => (
                                     <span key={win.bid_id}>
-                                        &pound;{win.bid_amount}{index < userWins[itemId].bids.length - 1 ? ', ' : ''}
+                                        &pound;{win.bid_amount}
                                     </span>
                                 ))}
                             </div>
@@ -131,7 +150,6 @@ const ProfilePage = () => {
                     <div>No wins, yet.</div>
                 )}
             </div>
-            {/* <Link to="/">Go to Home</Link> */}
         </div>
     );
 };
