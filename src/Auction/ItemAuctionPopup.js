@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './auction.css';
 import '../popup.css';
@@ -17,6 +17,22 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     const [auctionMessage, setAuctionMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
+    const [auctionEnd, setAuctionEnd] = useState('');
+    const [today, setToday] = useState('');
+
+    const minAuctionDate = () =>{
+        const currentDate = new Date();
+        const tomorrow = new Date(currentDate);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const year = tomorrow.getFullYear();
+        const month = String(tomorrow.getMonth() + 1).padStart(2, '0'); 
+        const day = String(tomorrow.getDate()).padStart(2, '0');
+        setToday(`${year}-${month}-${day}`);
+    }
+    useEffect(() => {
+        minAuctionDate();
+      }, []);
+
 
     const handleUpload = async (e) => {
         try {
@@ -29,6 +45,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         formData.append("startingPrice", startingPrice);
         formData.append("isDonated", isDonated);
         formData.append('size', size);
+        formData.append('auctionEndDate', auctionEnd);
         formData.append('userId', localStorage.getItem('userId'));
 
         const response = await axios.post('/item/upload', formData, {
@@ -48,7 +65,8 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         setImage(null);
         setSize('');
         setCurrentPrice('');
-        setIsDonated('')
+        setIsDonated('');
+        setAuctionEnd('')
         setTimeout(()=> {    
             setAuctionMessage('');
             if (onItemSaved) {
@@ -100,9 +118,9 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
             <div className="popup-content">
                 <span className="close-btn" onClick={handleCloseClick}>&times;</span>
                 <h1>Item</h1>
-                <form onSubmit={handleUpload}>
+                <form className='signup-form' onSubmit={handleUpload}>
                     <label htmlFor="image">Select image to upload:</label>
-                    <input type="file" name="image" id="image" onChange={(e) => setImage(e.target.files[0])} required /><br />
+                    <input type="file" name="image" id="image" onChange={(e) => setImage(e.target.files[0])} required />
                         <label htmlFor="categories">Category:</label>
                         <select id="categories" value={category} onChange={handleCategoryChange} required>
                             <option value="" disabled>Select an option</option>
@@ -117,8 +135,8 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <label htmlFor="title">Title:</label>
                     <input type='text' name='title' id='title' value={title} onChange={(e) => setTitle(e.target.value)} required />
                     <label htmlFor="description">Description:</label>
-                    <textarea name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea><br />
-                    <p style={{marginTop : '0px'}}>Size:</p>
+                    <textarea name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
+                    <p style={{margin : '5px'}}>Size:</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <label style={{ marginRight: '10px' }}>
                             <input type="radio" name="size" value="XS" checked={size === 'XS'} onChange={handleSizeChange} required/>
@@ -158,6 +176,9 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                         False
                     </label>
                     </div>
+                    <label htmlFor='auctionEnd'>Auction End Date:</label>
+                    <input type='date' name="auctionEnd" id='auctionEnd' value = {auctionEnd} min={today} onChange={(e)=> setAuctionEnd(e.target.value)} required />
+                    <br/>
                     <button className="signin-button" type="submit">Submit</button>
                     <div id="auctionMessage">{auctionMessage}</div>
                 </form>

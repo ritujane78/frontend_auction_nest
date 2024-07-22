@@ -4,7 +4,7 @@ function LogoComponent() {
     return (
         <div >
             <Link to="/">
-                <img className="logo" src="../images/hammer-logo-illustration-design-free-vector.jpg" />
+                <img className="logo-symbol" src="../hammer.png" />
             </Link>
         </div>
     );

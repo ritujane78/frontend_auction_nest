@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import './profile.css';
 import LogoComponent from "../Logo/LogoComponent";
 import { formatDate } from "../utils";
+import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 
 const ProfilePage = () => {
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
     const [userWins, setUserWins] = useState({});
     const [userUploads, setUserUploads] = useState({});
@@ -51,14 +53,22 @@ const ProfilePage = () => {
 
 
 
+
     const handleLogoutClick = () => {
-        const userConfirmed = window.confirm("Are you sure you want to log out?");
-        if (userConfirmed) {
-            localStorage.removeItem('expirationTime');
-            localStorage.removeItem('userId');
-            navigate("/");
-        }
-    }
+        setShowLogoutConfirm(true);
+    };
+
+    const handleConfirmLogout = () => {
+        localStorage.removeItem('expirationTime');
+        localStorage.removeItem('userId');
+        setShowLogoutConfirm(false); 
+        navigate("/");
+    };
+
+    const handleCloseLogoutConfirm = () => {
+        setShowLogoutConfirm(false); 
+    };
+    
 
     if (loading.profile || loading.bids || loading.uploads || loading.wins) return <div>Loading...</div>;
     if (error.profile) return <div>{error.profile}</div>;
@@ -138,11 +148,8 @@ const ProfilePage = () => {
                         <div className="win-item" key={itemId}>
                             <img className="win-image" src={`data:${userWins[itemId].itemDetails.image_type};base64,${userWins[itemId].itemDetails.image}`} alt={`Item ${itemId}`} />
                             <div className="win-amounts">
-                                {userWins[itemId].bids.map((win, index) => (
-                                    <span key={win.bid_id}>
-                                        &pound;{win.bid_amount}
-                                    </span>
-                                ))}
+                                        &pound;{userWins[itemId].bid_amount}
+
                             </div>
                         </div>
                     ))
@@ -150,7 +157,12 @@ const ProfilePage = () => {
                     <div>No wins, yet.</div>
                 )}
             </div>
-        </div>
+            <LogoutConfirmModal
+                show={showLogoutConfirm}
+                onClose={handleCloseLogoutConfirm}
+                onConfirm={handleConfirmLogout}
+            />
+        </div>  
     );
 };
 

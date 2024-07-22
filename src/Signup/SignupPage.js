@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LogoComponent from '../Logo/LogoComponent';
+import './signup.css'
 
 const SignupPage = ({ onSuccess }) => {
     const [username, setUsername] = useState('');
@@ -49,6 +51,10 @@ const SignupPage = ({ onSuccess }) => {
 
     return (
         <div className='container'>
+            <div className='logo'>
+                <LogoComponent />
+            </div>
+        <div className='form-container'>
             <h1>Signup</h1>
             <form id="signup-form" onSubmit={handleSignupSubmit}>
                 <div className='form-group'>
@@ -120,7 +126,8 @@ const SignupPage = ({ onSuccess }) => {
                 <button className="signupButton" type="submit">Signup</button>
             </form>
             <div id="message">{message}</div>
-            <Link to="/">Go to Home</Link>
+            {/* <Link to="/">Go to Home</Link> */}
+        </div>
         </div>
     );
 };

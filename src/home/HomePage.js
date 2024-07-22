@@ -3,6 +3,7 @@ import ItemBrowse from '../Auction/ItemBrowse';
 import ItemSellPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
+import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal'; // Import the modal
 import './home.css';
 import { Link } from "react-router-dom";
 import LogoComponent from '../Logo/LogoComponent';
@@ -13,7 +14,8 @@ function HomePage() {
     const [showSellPopup, setShowSellPopup] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
-    const [sortType, setSortType] = useState('byAuctionEnd'); // Default sort type
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [sortType, setSortType] = useState('byAuctionEnd'); 
 
     const donatedItemBrowseRef = useRef();
     const otherItemBrowseRef = useRef();
@@ -99,12 +101,18 @@ function HomePage() {
     };
 
     const handleLogoutClick = () => {
-        const userConfirmed = window.confirm("Are you sure you want to log out?");
-        if (userConfirmed) {
-            localStorage.removeItem('expirationTime');
-            localStorage.removeItem('userId');
-            setSigninSuccess(false);
-        }
+        setShowLogoutConfirm(true);
+    };
+
+    const handleConfirmLogout = () => {
+        localStorage.removeItem('expirationTime');
+        localStorage.removeItem('userId');
+        setSigninSuccess(false);
+        setShowLogoutConfirm(false); 
+    };
+
+    const handleCloseLogoutConfirm = () => {
+        setShowLogoutConfirm(false); 
     };
 
     const handleShowAlert = () => {
@@ -121,13 +129,14 @@ function HomePage() {
 
     return (
         <div className="App">
-            
             <div className='button-container'>
                 <LogoComponent />
                 {signinSuccess ? (
                     <>
-                        <Link id='clickText' to="/profile">Profile</Link>
-                        <p id="clickText" onClick={handleSellClick}>Upload</p>
+                        <div className='left-buttons'>
+                            <Link id='clickText' to="/profile">Profile</Link>
+                            <p id="clickText" onClick={handleSellClick}>Upload</p>
+                        </div>
                         <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '8%'}}>Log out</p>
                     </>
                 ) : (
@@ -164,6 +173,11 @@ function HomePage() {
                     onClose={handleCloseAlert}
                 />
             )}
+            <LogoutConfirmModal
+                show={showLogoutConfirm}
+                onClose={handleCloseLogoutConfirm}
+                onConfirm={handleConfirmLogout}
+            />
         </div>
     );
 }

@@ -14,20 +14,6 @@ body {
   overflow-x: hidden;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box; /* Ensures padding is included in the height calculation */
-}
-
 /* Add the following rules to ensure full coverage */
 html, body {
   height: 100%;
@@ -40,7 +26,7 @@ form {
 }
 
 form > div {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 form label {
@@ -55,9 +41,11 @@ form input, select {
 }
 h1 {
   text-align: center;
+  padding: 0px;
+  margin-bottom: 10px;
 }
 select{
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 .items-heading {
   color: white;
@@ -67,5 +55,8 @@ select{
   font-size: 24px;
   width: 100%;
   background-color: #555;
+}
+.signup-form p{
+  margin: 5px 0;
 }
 
