@@ -1,6 +1,6 @@
 /* styles.css */
 body {
-  font-family: URW Chancery L, cursive;
+  /* font-family: URW Chancery L, cursive; */
   font-variant: small-caps;
   /* font-family: 'Courier New', Courier, monospace; */
   /* font-weight: bold; */
@@ -46,6 +46,7 @@ h1 {
 }
 select{
   margin-bottom: 5px;
+
 }
 .items-heading {
   color: white;

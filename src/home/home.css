@@ -51,7 +51,60 @@
   box-sizing: border-box;
 }
 
-.sortBox {
-  text-align: end;
-  margin-right: 30px;
+.selection-container {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+
+.filter-button::after{
+  content: '\25BC';
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+.sort-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  background-image: none; /* Remove default background arrow */
+  padding-right: 30px; /* Add some padding to the right for the custom arrow */
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sort-select::after {
+  content: '';
+  position: absolute;
+  top: 100px;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  background-image: url('https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_arrow_drop_down_48px-512.png'); /* Online arrow image URL */
+  background-size: cover;
+  pointer-events: none; /* Allows clicking through the custom arrow */
+}
+
+.filter-menu {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  width: 100px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

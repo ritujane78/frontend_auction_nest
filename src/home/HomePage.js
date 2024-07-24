@@ -7,6 +7,8 @@ import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal'; // Im
 import './home.css';
 import { Link } from "react-router-dom";
 import LogoComponent from '../Logo/LogoComponent';
+import FilterComponent from '../FilterComponent/FilterComponent';  // Import the FilterComponent
+
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -16,6 +18,14 @@ function HomePage() {
     const [messageAlert, setMessageAlert] = useState('');
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [sortType, setSortType] = useState('byAuctionEnd'); 
+
+
+
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedSizes, setSelectedSizes] = useState([]);
+
+    const categories = ["pants", "tshirt", "dress", "skirt", "jacket", "others"];
+    const sizes = ["xs", "s", "m", "l", "xl", "n/a"];
 
     const donatedItemBrowseRef = useRef();
     const otherItemBrowseRef = useRef();
@@ -127,6 +137,11 @@ function HomePage() {
         setSortType(event.target.value);
     };
 
+    // const handleSearchChange = (event) => {
+    //     setSearchQuery(event.target.value);
+    // };
+
+
     return (
         <div className="App">
             <div className='button-container'>
@@ -137,7 +152,7 @@ function HomePage() {
                             <Link id='clickText' to="/profile">Profile</Link>
                             <p id="clickText" onClick={handleSellClick}>Upload</p>
                         </div>
-                        <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '8%'}}>Log out</p>
+                        <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '5%'}}>Log out</p>
                     </>
                 ) : (
                     <p id='clickText' onClick={handleSigninClick}>Sign in</p>
@@ -153,19 +168,32 @@ function HomePage() {
                 onClose={handleSigninClosePopup}
                 onSuccess={handleSigninSuccess}
             />
-            <p className='sortBox'>Sort:
-            <select onChange={handleSortChange} className="sort-select">
-                <option value="byAuctionEnd">By Auction End Time</option>
-                <option value="byCurrentBidHToL">By Current Bid (High to Low)</option>
-                <option value="byCurrentBidLToH">By Current Bid (Low to High)</option>
-                <option value="bySize">By Size</option>
-                {/* <option value="byCategory">By Category</option> */}
-            </select>
-            </p>
+            <div className='selection-container'>
+            
+                <FilterComponent
+                    categories={categories}
+                    sizes={sizes}
+                    selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
+                    selectedSizes={selectedSizes}
+                    setSelectedSizes={setSelectedSizes}
+                />
+        <div className='sort-select'>
+                <select onChange={handleSortChange}>
+                    <option value="byAuctionEnd">By Auction End Time</option>
+                    <option value="byCurrentBidHToL">By Current Bid (H to L)</option>
+                    <option value="byCurrentBidLToH">By Current Bid (L to H)</option>
+                    <option value="bySize">By Size</option>
+                    {/* <option value="byCategory">By Category</option> */}
+                </select>
+                </div>
+            </div>
             <p className='items-heading'>Donated Items</p>
-            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} filter="true" sortType={sortType} />
+            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} selectedCategories={selectedCategories}
+                selectedSizes={selectedSizes} filter="true" sortType={sortType} />
             <p className='items-heading'>Others</p>
-            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} filter="false" sortType={sortType} />
+            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} selectedCategories={selectedCategories}
+                selectedSizes={selectedSizes} filter="false" sortType={sortType} />
 
             {showAlert && (
                 <AlertDialog

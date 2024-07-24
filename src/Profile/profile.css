@@ -32,7 +32,7 @@
 .win-item {
     display: flex;
     width: 10%;
-    height: 100px;
+    height: 127px;
     flex-direction: column; 
     align-items: flex-start; 
     padding: 10px;
@@ -139,4 +139,5 @@
 }
 .wins-container {
     padding-bottom: 50px;
+    display: flex;
 }

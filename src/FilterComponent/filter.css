@@ -1,0 +1,47 @@
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-button {
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 120px;
+    padding: 10px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 10px; /* Space between filter and sort */
+}
+
+.filter-menu {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    font-variant: normal;
+    border-radius: 4px;
+    padding: 10px;
+    width: 100px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section {
+    margin-bottom: 10px;
+}
+
+.filter-section h4 {
+    margin-top: 0;
+}
+
+.filter-section label {
+    display: block;
+    margin: 5px 0;
+}
+
+.filter-section input {
+    margin-right: 5px;
+}

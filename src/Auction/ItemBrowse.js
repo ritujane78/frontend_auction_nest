@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../main.css';
 import AlertDialog from '../AlertDialog/AlertDialog';
 
-const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
+const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategories, selectedSizes }, ref) => {
     const [items, setItems] = useState([]);
     const [bidAmounts, setBidAmounts] = useState({});
     const [showAlert, setShowAlert] = useState(false);
@@ -14,7 +14,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
     const fetchItems = useCallback(async () => {
         try{
         const response = await axios.get('/item/items');
-        const filteredItems = response.data
+        let filteredItems = response.data
             .filter(item => {
                 const currentDate = new Date();
                 const auctionStartDate = new Date(item.auctionStart);
@@ -22,15 +22,26 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
                 return (currentDate > auctionStartDate && currentDate < auctionEndDate);
             })
             .filter(item => item.isDonated === filter);
+            if (selectedCategories.length > 0) {
+                filteredItems = filteredItems.filter(item =>  selectedCategories.includes(item.category.toLowerCase()));
+            }
+
+            console.log(selectedSizes);
+
+            if (selectedSizes.length > 0) {
+                filteredItems = filteredItems.filter(item => selectedSizes.includes(item.size.toLowerCase()));
+            }
+
 
         handleSortChange(sortType, filteredItems);
+
         }catch(error){
             console.error(`Error fetching data`, error);
             setErrorData("Error fetching data");
         }finally {
             setLoadingData(false);
         }
-    }, [filter, sortType]);
+    }, [filter, sortType, selectedCategories, selectedSizes]);
 
     const showTimer = (itemsList) => {
         return itemsList.map(item => {
@@ -150,17 +161,19 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
             });
         } else if (sortType === "bySize") {
             sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
-        }
-        //  else if (sortType === "byCategory") {
-        //     sortedItems.sort((a, b) => a.title.localeCompare(b.title));
-        // }
+        }   
         setItems(sortedItems);
     };
 
     const sortedAndTimedItems = showTimer(items);
+    const userId = localStorage.getItem("userId");
+
 
     if(loadingData)return <div>Loading...</div>;
     if(errorData)return <div>{errorData}</div>
+
+
+
 
     return (
         <div>
@@ -181,14 +194,15 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType }, ref) => {
                             <input
                                 type="number"
                                 min={itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}
-                                placeholder={`min. \u00A3${(itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice) + 0.5}`}
+                                placeholder={`${itemData.user_id == userId ? ' 🛇' : `min. £${(itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice) + 0.5}`}`}
                                 id={`bid-${itemData.id}`}
                                 name={`bid-${itemData.id}`}
                                 value={bidAmounts[itemData.id] || ''}
                                 onChange={(e) => handleBidChange(itemData.id, e.target.value)}
                                 required
+                                disabled ={itemData.user_id == userId}
                             />
-                            <button type="button" onClick={() => handleBidSubmit(itemData.id)}>Go</button>
+                            <button type="button" onClick={() => handleBidSubmit(itemData.id)} disabled ={itemData.user_id == userId}>Go</button>
                         </div>
                     </div>
                 ))}

@@ -80,7 +80,7 @@ const ProfilePage = () => {
         <div className="profile-container">
             <div className='button-container'>
                 <LogoComponent />
-                <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '7%' }}>Log out</p>
+                <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '5%' }}>Log out</p>
             </div>
             {userProfile ? (
                 <div className="profile-details">
