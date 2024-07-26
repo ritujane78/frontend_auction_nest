@@ -1,46 +1,7 @@
-.App {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.button-container {
-  display: flex;
-  /* gap: 10px; */
-  align-items: center;
-  justify-content: space-between;
-  /* width: 100%; */
-  padding: 10px 20px;
-  box-sizing: border-box;
-}
-
-.button-container .left-buttons {
-  display: flex;
-  gap: 10px;
-}
 .button-container p{
   margin: 0;
-  /* width: 7%; */
 }
 
-#clickText {
-  cursor: pointer;
-  color: white;
-  font-size: large;
-  /* letter-spacing: 5px; */
-  border: 2px solid black;
-  background-color: #555;
-  text-align: center;
-  padding: 10px 20px;
-  text-decoration: none;
-  margin: 0 10px;
-  border-radius: 5px;
-}
 
 .heading-container {
   display: flex;
@@ -107,4 +68,57 @@
   width: 100px;
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#clickText {
+  cursor: pointer;
+  color: white;
+  font-size: large;
+  background-color: #555;
+  text-align: center;
+  padding: 10px 20px;
+  text-decoration: none;
+  margin: 0 10px;
+  border-radius: 5px;
+}
+
+#notificationBell {
+  width: 30px;
+  height: 30px;
+  margin-top: 15px;
+  cursor: pointer;
+  position: relative;
+}
+
+.notification-container {
+  position: relative;
+}
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+}
+
+.left-buttons {
+  display: flex;
+  gap: 10px;
+  width: 80%;
+}
+
+.right-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

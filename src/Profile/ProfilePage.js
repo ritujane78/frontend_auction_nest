@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import './profile.css';
 import LogoComponent from "../Logo/LogoComponent";
 import { formatDate } from "../utils";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 
 const ProfilePage = () => {
+    const location = useLocation();
+    const { items } = location.state || { items: [] };
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
-    const [userWins, setUserWins] = useState({});
-    const [userUploads, setUserUploads] = useState({});
+    const [userWins, setUserWins] = useState([]);
+    const [userUploads, setUserUploads] = useState([]);
     const [sortedBids, setSortedBids] = useState([]);
     const [loading, setLoading] = useState({ profile: true, uploads: true, bids: true, wins: true });
     const [error, setError] = useState({ profile: null, uploads: null, bids: null, wins: null });
@@ -17,9 +19,35 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
 
-    if (!userId) {
-        navigate('/');
-    }
+    const fetchUploadsData = () => {
+        if (!userId) {
+            navigate('/');
+        }
+
+        try {
+            const uploads = items.filter(item => item.user_id == userId);
+            setUserUploads(uploads.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
+        } catch (err) {
+            setError(prev => ({ ...prev, uploads: "Error fetching data" }));
+        } finally {
+            setLoading(prev => ({ ...prev, uploads: false }));
+        }
+    };
+
+    const fetchWinsData = () => {
+        if (!userId) {
+            navigate('/');
+        }
+
+        try {
+            const wins = items.filter(item => item.winner_id == userId);
+            setUserWins(wins);
+        } catch (err) {
+            setError(prev => ({ ...prev, wins: "Error fetching data" }));
+        } finally {
+            setLoading(prev => ({ ...prev, wins: false }));
+        }
+    };
 
     const fetchData = useCallback(async (url, setter, errorSetter, loadingKey) => {
         try {
@@ -39,20 +67,14 @@ const ProfilePage = () => {
 
     useEffect(() => {
         fetchData(`/profile/user/${userId}`, setUserProfile, setError, 'profile');
-        fetchData(`/profile/user/${userId}/uploads`, (data) => {
-            const sortedArray = data.sort((a,b) => new Date(b.auctionEnd)- new Date(a.auctionEnd));
-            setUserUploads(sortedArray)
-        }, setError, 'uploads'); 
+        fetchUploadsData();
         fetchData(`/profile/user/${userId}/bids`, (data) => {
             const sortedBidsArray = Object.entries(data)
                 .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
             setSortedBids(sortedBidsArray);
-        }, setError, 'bids'); 
-        fetchData(`/profile/user/${userId}/wins`, setUserWins, setError, 'wins');
+        }, setError, 'bids');
+        fetchWinsData();
     }, [fetchData, userId]);
-
-
-
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);
@@ -61,18 +83,17 @@ const ProfilePage = () => {
     const handleConfirmLogout = () => {
         localStorage.removeItem('expirationTime');
         localStorage.removeItem('userId');
-        setShowLogoutConfirm(false); 
+        setShowLogoutConfirm(false);
         navigate("/");
     };
 
     const handleCloseLogoutConfirm = () => {
-        setShowLogoutConfirm(false); 
+        setShowLogoutConfirm(false);
     };
-    
 
     if (loading.profile || loading.bids || loading.uploads || loading.wins) return <div>Loading...</div>;
     if (error.profile) return <div>{error.profile}</div>;
-    if (error.uploads) return <div>{error.uploads}</div>
+    if (error.uploads) return <div>{error.uploads}</div>;
     if (error.bids) return <div>{error.bids}</div>;
     if (error.wins) return <div>{error.wins}</div>;
 
@@ -98,14 +119,14 @@ const ProfilePage = () => {
             <div className="uploads-container">
                 {userUploads.length > 0 ? (
                     userUploads.map(upload => (
-                        <div className="upload-item" key={upload.item_id}>
+                        <div className="upload-item" key={`upload_${upload.id}`}>
                             <div className="image-container">
                                 <img className="upload-image" src={`data:${upload.image_type};base64,${upload.image}`} alt={`Item ${upload.item_id}`} />
-                                {upload.isDonated==="true" && <span className="donated-tag">DONATED</span>}
+                                {upload.isDonated === "true" && <span className="donated-tag">DONATED</span>}
                             </div>
                             <div className="upload-details">
                                 <p className="auction-tag">auction end date</p>
-                                <p> {formatDate(upload.auctionEnd)}</p>
+                                <p>{formatDate(upload.auctionEnd)}</p>
                             </div>
                         </div>
                     ))
@@ -118,12 +139,12 @@ const ProfilePage = () => {
             <div className="bids-container">
                 {sortedBids.length > 0 ? (
                     sortedBids.map(([itemId, bidData]) => {
-                        const sortedBidAmounts = bidData.bids.length >1 ? bidData.bids.sort((a,b) => b.bid_amount - a.bid_amount): bidData.bids;
-                        const bidAmounts = sortedBidAmounts.map((bid) => `£${bid.bid_amount}`).join(', ');
+                        const sortedBidAmounts = bidData.bids.length > 1 ? bidData.bids.sort((a, b) => b.bid_amount - a.bid_amount) : bidData.bids;
+                        const bidAmounts = sortedBidAmounts.map((bid, index) => `£${bid.bid_amount}`).join(', ');
                         const truncatedBidAmounts = bidAmounts.length > 15 ? `${bidAmounts.slice(0, 15)}...` : bidAmounts;
 
                         return (
-                            <div className="bid-item" key={itemId}>
+                            <div className="bid-item" key={`bid_${itemId}`}>
                                 <div className="image-container">
                                     <img className="bid-image" src={`data:${bidData.itemDetails.image_type};base64,${bidData.itemDetails.image}`} alt={`Item ${itemId}`} />
                                 </div>
@@ -141,15 +162,15 @@ const ProfilePage = () => {
                     <div>No bids, yet.</div>
                 )}
             </div>
+
             <h2 className='items-heading'>Wins</h2>
             <div className="wins-container">
-                {Object.keys(userWins).length > 0 ? (
-                    Object.keys(userWins).map(itemId => (
-                        <div className="win-item" key={itemId}>
-                            <img className="win-image" src={`data:${userWins[itemId].itemDetails.image_type};base64,${userWins[itemId].itemDetails.image}`} alt={`Item ${itemId}`} />
+                {userWins.length > 0 ? (
+                    userWins.map(win => (
+                        <div className="win-item" key={`win_${win.id}`}>
+                            <img className="win-image" src={`data:${win.image_type};base64,${win.image}`} alt={`Item ${win.item_id}`} />
                             <div className="win-amounts">
-                                        &pound;{userWins[itemId].bid_amount}
-
+                                &pound;{win.final_price}
                             </div>
                         </div>
                     ))
@@ -162,7 +183,7 @@ const ProfilePage = () => {
                 onClose={handleCloseLogoutConfirm}
                 onConfirm={handleConfirmLogout}
             />
-        </div>  
+        </div>
     );
 };
 

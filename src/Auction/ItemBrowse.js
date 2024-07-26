@@ -1,47 +1,25 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
-import axios from 'axios';
 import '../main.css';
 import AlertDialog from '../AlertDialog/AlertDialog';
 
-const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategories, selectedSizes }, ref) => {
-    const [items, setItems] = useState([]);
-    const [bidAmounts, setBidAmounts] = useState({});
+const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBidAmounts }, ref) => {
+    const [localItems, setLocalItems] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
-    const [loadingData, setLoadingData]= useState(true);
+    const [loadingData, setLoadingData] = useState(true);
     const [errorData, setErrorData] = useState(null);
 
     const fetchItems = useCallback(async () => {
-        try{
-        const response = await axios.get('/item/items');
-        let filteredItems = response.data
-            .filter(item => {
-                const currentDate = new Date();
-                const auctionStartDate = new Date(item.auctionStart);
-                const auctionEndDate = new Date(item.auctionEnd);
-                return (currentDate > auctionStartDate && currentDate < auctionEndDate);
-            })
-            .filter(item => item.isDonated === filter);
-            if (selectedCategories.length > 0) {
-                filteredItems = filteredItems.filter(item =>  selectedCategories.includes(item.category.toLowerCase()));
-            }
-
-            console.log(selectedSizes);
-
-            if (selectedSizes.length > 0) {
-                filteredItems = filteredItems.filter(item => selectedSizes.includes(item.size.toLowerCase()));
-            }
-
-
-        handleSortChange(sortType, filteredItems);
-
-        }catch(error){
+        try {
+            setLocalItems(items);
+            handleSortChange(sortType, items);
+        } catch (error) {
             console.error(`Error fetching data`, error);
             setErrorData("Error fetching data");
-        }finally {
+        } finally {
             setLoadingData(false);
         }
-    }, [filter, sortType, selectedCategories, selectedSizes]);
+    }, [sortType, items]);
 
     const showTimer = (itemsList) => {
         return itemsList.map(item => {
@@ -62,13 +40,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
 
     useEffect(() => {
         fetchItems();
-    }, [filter, fetchItems, bidAmounts]);
-
-    // useEffect(() => {
-    //     if (sortType) {
-    //         handleSortChange(sortType);
-    //     }
-    // }, [sortType]);
+    }, [fetchItems, bidAmounts]);
 
     useImperativeHandle(ref, () => ({
         fetchItems
@@ -86,7 +58,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
         const userId = localStorage.getItem("userId");
         const minBidAmount = document.getElementById(`bid-${itemId}`).min;
         if (bidAmount < parseInt(minBidAmount) + 0.5) {
-            setMessageAlert(`Please place a bid amount of atleast \u00A3${parseInt(minBidAmount) + 0.5}`);
+            setMessageAlert(`Please place a bid amount of at least \u00A3${parseInt(minBidAmount) + 0.5}`);
             setBidAmounts({
                 ...bidAmounts,
                 [itemId]: ''
@@ -95,7 +67,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
             return;
         }
         if (!userId) {
-            setMessageAlert("Please Signin first!");
+            setMessageAlert("Please Sign in first!");
             setBidAmounts({
                 ...bidAmounts,
                 [itemId]: ''
@@ -127,11 +99,11 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
 
     const sizeOrder = ["xs", "s", "m", "l", "xl", "n/a"];
 
-    const handleSortChange = (sortType, itemsToSort = items) => {
+    const handleSortChange = (sortType, itemsToSort = localItems) => {
         let sortedItems = [...itemsToSort];
         if (sortType === "byAuctionEnd") {
             sortedItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
-        }  else if (sortType === "byCurrentBidHToL") {
+        } else if (sortType === "byCurrentBidHToL") {
             sortedItems.sort((a, b) => {
                 const bidA = a.currentPrice || 0;
                 const bidB = b.currentPrice || 0;
@@ -140,12 +112,12 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
                 } else if (bidA === 0) {
                     return bidB - parseFloat(a.startingPrice);
                 } else if (bidB === 0) {
-                    return parseFloat(b.startingPrice) - bidA;
+                    return parseFloat(a.startingPrice) - bidA;
                 } else {
                     return bidB - bidA;
                 }
             });
-        }  else if (sortType === "byCurrentBidLToH") {
+        } else if (sortType === "byCurrentBidLToH") {
             sortedItems.sort((a, b) => {
                 const bidA = a.currentPrice || 0;
                 const bidB = b.currentPrice || 0;
@@ -161,19 +133,15 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
             });
         } else if (sortType === "bySize") {
             sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
-        }   
-        setItems(sortedItems);
+        }
+        setLocalItems(sortedItems);
     };
 
-    const sortedAndTimedItems = showTimer(items);
+    const sortedAndTimedItems = showTimer(localItems);
     const userId = localStorage.getItem("userId");
 
-
-    if(loadingData)return <div>Loading...</div>;
-    if(errorData)return <div>{errorData}</div>
-
-
-
+    if (loadingData) return <div>Loading...</div>;
+    if (errorData) return <div>{errorData}</div>;
 
     return (
         <div>
@@ -183,7 +151,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
                         <h3 className='timer'>{itemData.days}D:{itemData.hours}H:{itemData.minutes}M</h3>
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} />
                         <p className='description' title={itemData.description}>
-                            {itemData.description.length> 36? `${itemData.description.slice(0,36)}...`: itemData.description}</p>
+                            {itemData.description.length > 36 ? `${itemData.description.slice(0, 36)}...` : itemData.description}</p>
                         <p>Size: {itemData.size}</p>
                         <div className='bids'>
                             <p>Starting price: &pound;{itemData.startingPrice}</p>
@@ -200,9 +168,9 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
                                 value={bidAmounts[itemData.id] || ''}
                                 onChange={(e) => handleBidChange(itemData.id, e.target.value)}
                                 required
-                                disabled ={itemData.user_id == userId}
+                                disabled={itemData.user_id == userId}
                             />
-                            <button type="button" onClick={() => handleBidSubmit(itemData.id)} disabled ={itemData.user_id == userId}>Go</button>
+                            <button type="button" onClick={() => handleBidSubmit(itemData.id)} disabled={itemData.user_id == userId}>Go</button>
                         </div>
                     </div>
                 ))}
@@ -218,3 +186,5 @@ const ItemBrowse = forwardRef(({ onBidSubmit, filter, sortType, selectedCategori
 });
 
 export default ItemBrowse;
+
+

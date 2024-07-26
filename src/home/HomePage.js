@@ -3,12 +3,13 @@ import ItemBrowse from '../Auction/ItemBrowse';
 import ItemSellPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
+import Notification from '../NotificationsComponent/NotificationsComponent';
 import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal'; // Import the modal
 import './home.css';
 import { Link } from "react-router-dom";
 import LogoComponent from '../Logo/LogoComponent';
 import FilterComponent from '../FilterComponent/FilterComponent';  // Import the FilterComponent
-
+import axios from 'axios';
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -18,8 +19,12 @@ function HomePage() {
     const [messageAlert, setMessageAlert] = useState('');
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [sortType, setSortType] = useState('byAuctionEnd'); 
-
-
+    const [items, setItems] = useState([]);
+    const [donatedItems, setDonatedItems] = useState([]);
+    const [otherItems, setOtherItems] = useState([]);
+    const [bidAmounts, setBidAmounts] = useState({});
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false); // New state for showing notifications
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
@@ -32,7 +37,16 @@ function HomePage() {
 
     useEffect(() => {
         checkLoginStatus();
+        fetchItems();
     }, []);
+
+    useEffect(() => {
+        filterItems();
+    }, [items, selectedCategories, selectedSizes]);
+
+    useEffect(() => {
+        fetchItems();
+    }, [bidAmounts]);
 
     const checkLoginStatus = () => {
         const expirationTime = localStorage.getItem('expirationTime');
@@ -45,6 +59,38 @@ function HomePage() {
             localStorage.removeItem('expirationTime');
             setSigninSuccess(false);
         }
+    };
+
+    const fetchItems = async () => {
+        try {
+            const response = await axios.get('/item/items');
+            setItems(response.data);
+            setNotifications(response.data);  // Update notifications based on items
+        } catch (error) {
+            console.error('Error fetching items:', error);
+            setMessageAlert('Error fetching items.');
+            setShowAlert(true);
+        }
+    };
+
+    const filterItems = () => {
+        let filtered = items;
+
+        if (selectedCategories.length > 0) {
+            filtered = filtered.filter(item => selectedCategories.includes(item.category.toLowerCase()));
+        }
+
+        if (selectedSizes.length > 0) {
+            filtered = filtered.filter(item => selectedSizes.includes(item.size.toLowerCase()));
+        }
+        filtered = filtered
+            .filter(item => {
+                const currentDate = new Date();
+                const auctionEndDate = new Date(item.auctionEnd);
+                return (currentDate < auctionEndDate);
+            });
+        setDonatedItems(filtered.filter(item => item.isDonated === "true"));
+        setOtherItems(filtered.filter(item => item.isDonated === "false"));
     };
 
     const handleSigninClick = () => {
@@ -87,6 +133,11 @@ function HomePage() {
             if (response.ok) {
                 setMessageAlert("Bid Placed Successfully!");
                 handleShowAlert();
+                setBidAmounts({
+                    ...bidAmounts,
+                    [item_id]: bidAmount
+                });
+                fetchItems(); // Fetch updated items after a successful bid
                 return true;
             }
             setMessageAlert("Failed to Place Bid.");
@@ -101,12 +152,7 @@ function HomePage() {
     };
 
     const handleItemSaved = () => {
-        if (donatedItemBrowseRef.current) {
-            donatedItemBrowseRef.current.fetchItems();
-        }
-        if (otherItemBrowseRef.current) {
-            otherItemBrowseRef.current.fetchItems();
-        }
+        fetchItems();
         setShowSellPopup(false);
     };
 
@@ -137,10 +183,9 @@ function HomePage() {
         setSortType(event.target.value);
     };
 
-    // const handleSearchChange = (event) => {
-    //     setSearchQuery(event.target.value);
-    // };
-
+    const toggleNotifications = () => {
+        setShowNotifications(!showNotifications);
+    };
 
     return (
         <div className="App">
@@ -149,10 +194,21 @@ function HomePage() {
                 {signinSuccess ? (
                     <>
                         <div className='left-buttons'>
-                            <Link id='clickText' to="/profile">Profile</Link>
+                            <Link id='clickText' to="/profile" state={{items}}>Profile</Link>
                             <p id="clickText" onClick={handleSellClick}>Upload</p>
                         </div>
-                        <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '5%'}}>Log out</p>
+                        <div className='right-buttons'>
+                            <div className='notification-container'>
+                                <img 
+                                    id='notificationBell' 
+                                    src='images/bell.png'
+                                    alt='Notifications' 
+                                    onClick={toggleNotifications}
+                                />
+                                {showNotifications && <Notification id='clickText' items={notifications} />}
+                            </div>
+                            <p id='clickText' onClick={handleLogoutClick}>Log out</p>
+                        </div>
                     </>
                 ) : (
                     <p id='clickText' onClick={handleSigninClick}>Sign in</p>
@@ -169,7 +225,6 @@ function HomePage() {
                 onSuccess={handleSigninSuccess}
             />
             <div className='selection-container'>
-            
                 <FilterComponent
                     categories={categories}
                     sizes={sizes}
@@ -178,22 +233,19 @@ function HomePage() {
                     selectedSizes={selectedSizes}
                     setSelectedSizes={setSelectedSizes}
                 />
-        <div className='sort-select'>
-                <select onChange={handleSortChange}>
-                    <option value="byAuctionEnd">By Auction End Time</option>
-                    <option value="byCurrentBidHToL">By Current Bid (H to L)</option>
-                    <option value="byCurrentBidLToH">By Current Bid (L to H)</option>
-                    <option value="bySize">By Size</option>
-                    {/* <option value="byCategory">By Category</option> */}
-                </select>
+                <div className='sort-select'>
+                    <select onChange={handleSortChange}>
+                        <option value="byAuctionEnd">By Auction End Time</option>
+                        <option value="byCurrentBidHToL">By Current Bid (H to L)</option>
+                        <option value="byCurrentBidLToH">By Current Bid (L to H)</option>
+                        <option value="bySize">By Size</option>
+                    </select>
                 </div>
             </div>
             <p className='items-heading'>Donated Items</p>
-            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} selectedCategories={selectedCategories}
-                selectedSizes={selectedSizes} filter="true" sortType={sortType} />
+            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} sortType={sortType} items={donatedItems} bidAmounts={bidAmounts} setBidAmounts={setBidAmounts} />
             <p className='items-heading'>Others</p>
-            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} selectedCategories={selectedCategories}
-                selectedSizes={selectedSizes} filter="false" sortType={sortType} />
+            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} sortType={sortType} items={otherItems} bidAmounts={bidAmounts} setBidAmounts={setBidAmounts} />
 
             {showAlert && (
                 <AlertDialog
