@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, UNSAFE_ErrorResponseImpl, useNavigate } from 'react-router-dom';
-import LogoComponent from '../Logo/LogoComponent';
+import LogoComponent from '../LogoComponent/LogoComponent';
 import './signup.css'
 
 const SignupPage = ({ onSuccess }) => {
@@ -134,7 +134,7 @@ const SignupPage = ({ onSuccess }) => {
                         required
                     />
                 </div>
-                <button className="signupButton" type="submit">Signup</button>
+                <button className="signup-button" type="submit">Signup</button>
             </form>
             <div id="message">{message}</div>
         </div>

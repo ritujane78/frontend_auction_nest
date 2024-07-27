@@ -5,11 +5,10 @@ import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import Notification from '../NotificationsComponent/NotificationsComponent';
 import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal'; // Import the modal
-import './home.css';
 import { Link } from "react-router-dom";
-import LogoComponent from '../Logo/LogoComponent';
+import LogoComponent from '../LogoComponent/LogoComponent';
 import FilterComponent from '../FilterComponent/FilterComponent';  // Import the FilterComponent
-import axios from 'axios';
+import './home.css';
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -63,9 +62,15 @@ function HomePage() {
 
     const fetchItems = async () => {
         try {
-            const response = await axios.get('/item/items');
-            setItems(response.data);
-            setNotifications(response.data);  // Update notifications based on items
+            const response = await fetch('/item/items', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            const data = await response.json();
+            setItems(data);
+            setNotifications(data);
         } catch (error) {
             console.error('Error fetching items:', error);
             setMessageAlert('Error fetching items.');
@@ -137,7 +142,6 @@ function HomePage() {
                     ...bidAmounts,
                     [item_id]: bidAmount
                 });
-                fetchItems(); // Fetch updated items after a successful bid
                 return true;
             }
             setMessageAlert("Failed to Place Bid.");
@@ -194,24 +198,24 @@ function HomePage() {
                 {signinSuccess ? (
                     <>
                         <div className='left-buttons'>
-                            <Link id='clickText' to="/profile" state={{items}}>Profile</Link>
-                            <p id="clickText" onClick={handleSellClick}>Upload</p>
+                            <Link id='click-text' to="/profile" state={{items}}>Profile</Link>
+                            <p id="click-text" onClick={handleSellClick}>Upload</p>
                         </div>
                         <div className='right-buttons'>
                             <div className='notification-container'>
                                 <img 
-                                    id='notificationBell' 
+                                    id='notification-bell' 
                                     src='images/bell.png'
                                     alt='Notifications' 
                                     onClick={toggleNotifications}
                                 />
                                 {showNotifications && <Notification id='clickText' items={notifications} />}
                             </div>
-                            <p id='clickText' onClick={handleLogoutClick}>Log out</p>
+                            <p id='click-text' onClick={handleLogoutClick}>Log out</p>
                         </div>
                     </>
                 ) : (
-                    <p id='clickText' onClick={handleSigninClick}>Sign in</p>
+                    <p id='click-text' onClick={handleSigninClick}>Sign in</p>
                 )}
             </div>
             <ItemSellPopup

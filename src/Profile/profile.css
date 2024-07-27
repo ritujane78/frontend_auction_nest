@@ -141,3 +141,7 @@
     padding-bottom: 50px;
     display: flex;
 }
+.logout-button{
+    margin-left: auto;
+    width: 5%;
+}

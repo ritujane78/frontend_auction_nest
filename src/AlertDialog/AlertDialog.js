@@ -1,5 +1,5 @@
 import React from 'react';
-import './AlertDialog.css';
+import './alert.css';
 
 const AlertDialog = ({ message, onClose }) => {
   return (

@@ -1,4 +1,3 @@
-/* styles.css */
 body {
   /* font-family: URW Chancery L, cursive; */
   font-variant: small-caps;
@@ -14,7 +13,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Add the following rules to ensure full coverage */
 html, body {
   height: 100%;
   margin: 0;

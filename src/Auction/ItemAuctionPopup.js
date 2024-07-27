@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import AlertDialog from '../AlertDialog/AlertDialog';
 import './auction.css';
 import '../popup.css';
-import AlertDialog from '../AlertDialog/AlertDialog';
-
 
 const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
     const [title, setTitle] = useState('');
@@ -34,12 +32,11 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
       }, []);
 
 
-    const handleUpload = async (e) => {
-        try {
+      const handleUpload = async (e) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('title', title);
-        formData.append('category', category)
+        formData.append('category', category);
         formData.append('description', description);
         formData.append('image', image);
         formData.append("startingPrice", startingPrice);
@@ -48,38 +45,44 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         formData.append('auctionEndDate', auctionEnd);
         formData.append('userId', localStorage.getItem('userId'));
 
-        const response = await axios.post('/item/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+        try {
+            const response = await fetch('/item/upload', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                setAuctionMessage("Item Uploaded Successfully. Ready for auction.");
+                setTitle('');
+                setCategory('');
+                setDescription('');
+                setStartingPrice('');
+                setImage(null);
+                setSize('');
+                setCurrentPrice('');
+                setIsDonated('');
+                setAuctionEnd('');
+
+                setTimeout(() => {
+                    setAuctionMessage('');
+                    if (onItemSaved) {
+                        onItemSaved();
+                    }
+                }, 2000);
+            } else {
+                throw new Error(data.error);
             }
-        });
-
-        
-        if(response.status === 200){
-            setAuctionMessage("Item Uploaded Successfully. Ready for auction.");
-                  }
-        setTitle('');
-        setCategory('');
-        setDescription('');
-        setStartingPrice('');
-        setImage(null);
-        setSize('');
-        setCurrentPrice('');
-        setIsDonated('');
-        setAuctionEnd('')
-        setTimeout(()=> {    
-            setAuctionMessage('');
-            if (onItemSaved) {
-                onItemSaved();
-            }
-        }, 2000)
-
-
         } catch (error) {
-            setAuctionMessage(` Error saving the item: ${error.response.data.error}`);
+            setAuctionMessage(`Error saving the item: ${error.message}`);
         }
-        
     };
+
+
     if (!show) {
         return null;
     }
@@ -136,25 +139,25 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <input type='text' name='title' id='title' value={title} onChange={(e) => setTitle(e.target.value)} required />
                     <label htmlFor="description">Description:</label>
                     <textarea name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
-                    <p style={{margin : '5px'}}>Size:</p>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <label style={{ marginRight: '10px' }}>
+                    <p className="size-label">Size:</p>
+                    <div className = "radio-buttons">
+                        <label className= 'margin-r'>
                             <input type="radio" name="size" value="XS" checked={size === 'XS'} onChange={handleSizeChange} required/>
                             XS
                         </label>
-                        <label style={{ marginRight: '10px' }}>
+                        <label className= 'margin-r'>
                             <input type="radio" name="size" value="S" checked={size === 'S'} onChange={handleSizeChange}required />
                             S
                         </label>
-                        <label style={{ marginRight: '10px' }}>
+                        <label className= 'margin-r'>
                             <input type="radio" name="size" value="M" checked={size === 'M'} onChange={handleSizeChange} required/>
                             M
                         </label>
-                        <label style={{marginRight: '10px'}}>
+                        <label className= 'margin-r'>
                             <input type="radio" name="size" value="L" checked={size === 'L'} onChange={handleSizeChange} required/>
                             L
                         </label>
-                        <label style={{marginRight: '10px'}}>
+                        <label className= 'margin-r'>
                             <input type="radio" name="size" value="XL" checked={size === 'XL'} onChange={handleSizeChange} required/>
                             XL
                         </label>
@@ -166,8 +169,8 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <label htmlFor='StartingPrice'>Starting price:</label>
                     <input type='number' name="startingPrice" id='startingPrice' value = {startingPrice} onChange={(e)=> setStartingPrice(e.target.value)} required />
                     <p>Donated:</p>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <label style={{ marginRight: '10px' }}>
+                    <div className='radio-buttons'>
+                    <label className= 'margin-r'>
                         <input type="radio" value="true" name="isDonatedOption" checked={isDonated === 'true'} onChange={handleIsDonatedChange} required />
                         True
                     </label>
@@ -180,7 +183,7 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
                     <input type='date' name="auctionEnd" id='auctionEnd' value = {auctionEnd} min={today} onChange={(e)=> setAuctionEnd(e.target.value)} required />
                     <br/>
                     <button className="signin-button" type="submit">Submit</button>
-                    <div id="auctionMessage">{auctionMessage}</div>
+                    <div id="auction-message">{auctionMessage}</div>
                 </form>
                 {showAlert && (
                     <AlertDialog 

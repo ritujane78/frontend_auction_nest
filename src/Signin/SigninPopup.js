@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
-import axios from 'axios';
 import './signin.css';
 
 const SigninPopup = ({ show, onClose, onSuccess }) => {
@@ -11,20 +10,31 @@ const SigninPopup = ({ show, onClose, onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/user/signin', { username, password });
-            setMessage(`Message: ${response.data.message}`);
-            localStorage.setItem('userId', response.data.userId);
-            localStorage.setItem('expirationTime', response.data.expirationTime);
-            if (response.status === 200) {
+            const response = await fetch('/user/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessage(`Message: ${data.message}`);
+                localStorage.setItem('userId', data.userId);
+                localStorage.setItem('expirationTime', data.expirationTime);
                 setTimeout(() => {
                     onSuccess();
                     setUsername('');
                     setPassword('');
                     setMessage('');
                 }, 1000);
+            } else {
+                throw new Error(data.error);
             }
         } catch (error) {
-            setMessage(error.response.data.error);
+            setMessage(error.message);
         }
     };
 
@@ -54,7 +64,7 @@ const SigninPopup = ({ show, onClose, onSuccess }) => {
                     <button className="signin-button" type="submit">Sign In</button>
                 </form>
                 {message && <p>{message}</p>}
-                <p className="registerText">Not a user yet? &nbsp;
+                <p className="register-text">Not a user yet? &nbsp;
                     <Link id="register" to="/signup">Register!!</Link>
                 </p>
             </div>

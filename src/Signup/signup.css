@@ -22,17 +22,17 @@ button.signupButton {
     border-radius: 5px;
     cursor: pointer;
   }
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box; /* Ensures padding is included in the height calculation */
-  }
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Ensures padding is included in the height calculation */
+}
   
 #signup-form {
     text-align: center;
@@ -54,7 +54,7 @@ button.signupButton {
   #signup-form div {
     padding-bottom: 10px;
   }
-  .signupButton {
+  .signup-button {
     background-color: #555;
     cursor: pointer;
     color: white;

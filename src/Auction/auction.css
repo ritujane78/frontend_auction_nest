@@ -1,8 +1,8 @@
-#imagesContainer {
+#items-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 2px; /* Space between the cards */
+  gap: 2px; 
   padding: 10px;
   width: 100%;
 }
@@ -83,7 +83,17 @@
     border-radius: 4px;
   }
 
-  #auctionMessage {
+  #auction-message {
     text-align: center;
   }
+  .margin-r {
+    margin-right: 10px;
+  }
   
+  .size-label{
+    margin: 5px;
+  }
+  .radio-buttons{
+    display: flex;
+    align-items: center;
+  }

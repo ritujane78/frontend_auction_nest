@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './filter.css'; // Ensure to add CSS for styling
+import './filter.css';
 
 const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCategories, selectedSizes, setSelectedSizes }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);

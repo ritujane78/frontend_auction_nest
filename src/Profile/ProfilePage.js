@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import './profile.css';
-import LogoComponent from "../Logo/LogoComponent";
+import LogoComponent from "../LogoComponent/LogoComponent";
 import { formatDate } from "../utils";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
+import './profile.css';
 
 const ProfilePage = () => {
     const location = useLocation();
@@ -102,13 +102,13 @@ const ProfilePage = () => {
         <div className="profile-container">
             <div className='button-container'>
                 <LogoComponent />
-                <p id='clickText' onClick={handleLogoutClick} style={{ marginLeft: 'auto', width: '5%' }}>Log out</p>
+                <p id='click-text' className = 'logout-button'onClick={handleLogoutClick} >Log out</p>
             </div>
             {userProfile ? (
                 <div className="profile-details">
                     <h1>{userProfile.name}</h1>
                     <p>Username: {userProfile.username}</p>
-                    <p>Email address: {userProfile.email}</p>
+                    <p>Email Address: {userProfile.email}</p>
                     <p>Home Address: {userProfile.address}</p>
                     <p>Phone Number: {userProfile.phone}</p>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
-import '../main.css';
 import AlertDialog from '../AlertDialog/AlertDialog';
+import '../main.css';
+import './auction.css';
 
 const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBidAmounts }, ref) => {
     const [localItems, setLocalItems] = useState([]);
@@ -145,7 +146,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
 
     return (
         <div>
-            <div id="imagesContainer">
+            <div id="items-container">
                 {sortedAndTimedItems.map(itemData => (
                     <div key={itemData.id} className="item-card">
                         <h3 className='timer'>{itemData.days}D:{itemData.hours}H:{itemData.minutes}M</h3>

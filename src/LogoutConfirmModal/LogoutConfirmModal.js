@@ -1,5 +1,5 @@
 import React from 'react';
-import './LogoutConfirmModal.css';
+import './logout.css';
 
 const LogoutConfirmModal = ({ show, onClose, onConfirm }) => {
     if (!show) return null;
