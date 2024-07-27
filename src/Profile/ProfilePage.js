@@ -41,7 +41,8 @@ const ProfilePage = () => {
 
         try {
             const wins = items.filter(item => item.winner_id == userId);
-            setUserWins(wins);
+            setUserWins(wins.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
+            // setUserWins(wins);
         } catch (err) {
             setError(prev => ({ ...prev, wins: "Error fetching data" }));
         } finally {
@@ -169,9 +170,13 @@ const ProfilePage = () => {
                     userWins.map(win => (
                         <div className="win-item" key={`win_${win.id}`}>
                             <img className="win-image" src={`data:${win.image_type};base64,${win.image}`} alt={`Item ${win.item_id}`} />
+                        <div className="win-details">
                             <div className="win-amounts">
                                 &pound;{win.final_price}
                             </div>
+                            <p className="auction-tag">On</p>
+                            <p>{formatDate(win.auctionEnd)}</p>
+                        </div>
                         </div>
                     ))
                 ) : (

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Link, UNSAFE_ErrorResponseImpl, useNavigate } from 'react-router-dom';
 import LogoComponent from '../Logo/LogoComponent';
 import './signup.css'
 
@@ -35,17 +34,29 @@ const SignupPage = ({ onSuccess }) => {
             updatedAt
         };
 
-        try {
-            const response = await axios.post('/user/signup', formData);
-            setMessage(response.data.message);
-            if (response.status === 200) {
-                setTimeout(() => {
+        try{
+            const response = await fetch('/user/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData),
+            });
+            if(!response.ok){
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Signup failed');
+            }
+            const data = await response.json();
+            setMessage(data.message);
+
+            if(response.status === 200){
+                setTimeout(()=> {
                     navigate("/");
                     setMessage('');
-                }, 2000);
+                },2000)
             }
-        } catch (error) {
-            setMessage(error.response ? error.response.data.error : 'Signup failed');
+        } catch(error){
+            setMessage(error.message);
         }
     };
 
@@ -126,7 +137,6 @@ const SignupPage = ({ onSuccess }) => {
                 <button className="signupButton" type="submit">Signup</button>
             </form>
             <div id="message">{message}</div>
-            {/* <Link to="/">Go to Home</Link> */}
         </div>
         </div>
     );
