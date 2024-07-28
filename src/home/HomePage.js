@@ -19,6 +19,7 @@ function HomePage() {
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [sortType, setSortType] = useState('byAuctionEnd'); 
     const [items, setItems] = useState([]);
+    const [bids, setBids] = useState([]);
     const [donatedItems, setDonatedItems] = useState([]);
     const [otherItems, setOtherItems] = useState([]);
     const [bidAmounts, setBidAmounts] = useState({});
@@ -36,8 +37,14 @@ function HomePage() {
 
     useEffect(() => {
         checkLoginStatus();
-        fetchItems();
     }, []);
+
+    useEffect(() => {
+        if (signinSuccess) {
+            fetchItems();
+            fetchBidsData();
+        }
+    }, [signinSuccess]);
 
     useEffect(() => {
         filterItems();
@@ -46,6 +53,7 @@ function HomePage() {
     useEffect(() => {
         fetchItems();
     }, [bidAmounts]);
+
 
     const checkLoginStatus = () => {
         const expirationTime = localStorage.getItem('expirationTime');
@@ -74,6 +82,36 @@ function HomePage() {
         } catch (error) {
             console.error('Error fetching items:', error);
             setMessageAlert('Error fetching items.');
+            setShowAlert(true);
+        }
+    };
+    const fetchBidsData = async () => {
+        try {
+            const user_id = parseInt(localStorage.getItem('userId'));
+
+            if (!user_id) {
+                return;
+            }
+
+            const response = await fetch(`/profile/user/${user_id}/bids`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            console.log(`response = ${response}` );
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const bidsDB = await response.json();
+            const sortedBidsArray = Object.entries(bidsDB)
+                .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
+            console.log("home");
+                console.log(sortedBidsArray);
+            setBids(sortedBidsArray);
+            console.log(bids);
+        } catch (err) {
+            setMessageAlert('Error fetching bids.');
             setShowAlert(true);
         }
     };
@@ -198,7 +236,7 @@ function HomePage() {
                 {signinSuccess ? (
                     <>
                         <div className='left-buttons'>
-                            <Link id='click-text' to="/profile" state={{items}}>Profile</Link>
+                            <Link id='click-text' to="/profile" state={{items , bids}}>Profile</Link>
                             <p id="click-text" onClick={handleSellClick}>Upload</p>
                         </div>
                         <div className='right-buttons'>
@@ -209,7 +247,7 @@ function HomePage() {
                                     alt='Notifications' 
                                     onClick={toggleNotifications}
                                 />
-                                {showNotifications && <Notification id='clickText' items={notifications} />}
+                                {showNotifications && <Notification id='clickText' bids = {bids} items={notifications} />}
                             </div>
                             <p id='click-text' onClick={handleLogoutClick}>Log out</p>
                         </div>

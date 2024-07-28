@@ -7,7 +7,7 @@ import './profile.css';
 
 const ProfilePage = () => {
     const location = useLocation();
-    const { items } = location.state || { items: [] };
+    const { items, bids } = location.state || { items: [] };
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
     const [userWins, setUserWins] = useState([]);
@@ -19,63 +19,67 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
 
-    const fetchUploadsData = () => {
-        if (!userId) {
-            navigate('/');
-        }
-
+    const fetchUserInfoData = async () => {
         try {
-            const uploads = items.filter(item => item.user_id == userId);
-            setUserUploads(uploads.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
-        } catch (err) {
-            setError(prev => ({ ...prev, uploads: "Error fetching data" }));
-        } finally {
-            setLoading(prev => ({ ...prev, uploads: false }));
-        }
-    };
-
-    const fetchWinsData = () => {
-        if (!userId) {
-            navigate('/');
-        }
-
-        try {
-            const wins = items.filter(item => item.winner_id == userId);
-            setUserWins(wins.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
-            // setUserWins(wins);
-        } catch (err) {
-            setError(prev => ({ ...prev, wins: "Error fetching data" }));
-        } finally {
-            setLoading(prev => ({ ...prev, wins: false }));
-        }
-    };
-
-    const fetchData = useCallback(async (url, setter, errorSetter, loadingKey) => {
-        try {
-            const response = await fetch(url);
+            const response = await fetch(`/profile/user/${userId}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setter(data);
+            setUserProfile(data);
         } catch (error) {
-            console.error(`Error fetching data from ${url}:`, error);
-            errorSetter(prev => ({ ...prev, [loadingKey]: `Error fetching data` }));
+            console.error(`Error fetching data from user table:`, error);
+            setError(prev => ({ ...prev, ['profile']: `Error fetching data` }));
         } finally {
-            setLoading(prev => ({ ...prev, [loadingKey]: false }));
+            setLoading(prev => ({ ...prev, ['profile']: false }));
         }
-    }, []);
+    };
+    const fetchUploadsData = () => {
+        if (!userId) {
+            navigate('/');
+        }
+        try {
+            const uploads = items.filter(item => item.user_id == userId);
+            setUserUploads(uploads.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
+        } catch (err) {
+            setError(prev => ({ ...prev, ['uploads']: "Error fetching data" }));
+        } finally {
+            setLoading(prev => ({ ...prev, ['uploads']: false }));
+        }
+    };
+
+    const fetchBidsData = async () =>{
+        if (!userId) {
+            navigate('/');
+        }
+        try {
+            setSortedBids(bids);
+        } catch (err) {
+            setError(prev => ({ ...prev, ['bids']: "Error fetching data" }));
+        } finally {
+            setLoading(prev => ({ ...prev, ['bids']: false }));
+        }
+    }
+    const fetchWinsData = () => {
+        if (!userId) {
+            navigate('/');
+        }
+        try {
+            const wins = items.filter(item => item.winner_id == userId);
+            setUserWins(wins.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
+        } catch (err) {
+            setError(prev => ({ ...prev, ['wins']: "Error fetching data" }));
+        } finally {
+            setLoading(prev => ({ ...prev, ['wins']: false }));
+        }
+    };
 
     useEffect(() => {
-        fetchData(`/profile/user/${userId}`, setUserProfile, setError, 'profile');
+        fetchUserInfoData();
         fetchUploadsData();
-        fetchData(`/profile/user/${userId}/bids`, (data) => {
-            const sortedBidsArray = Object.entries(data)
-                .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
-            setSortedBids(sortedBidsArray);
-        }, setError, 'bids');
+        fetchBidsData();
         fetchWinsData();
-    }, [fetchData, userId]);
+    }, [userId]);
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);
