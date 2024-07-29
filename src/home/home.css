@@ -30,11 +30,6 @@
   box-sizing: border-box;
 }
 
-.filter-button::after{
-  content: '\25BC';
-  margin-left: 10px;
-  font-size: 12px;
-}
 
 .sort-select select {
   appearance: none;
@@ -51,17 +46,35 @@
   cursor: pointer;
 }
 
+.filter-button {
+  display: flex;
+  align-items: center;
+  justify-content: start; /* Align text to the start */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  position: relative;
+  width: 130px;
+}
+
+.filter-button::after,
 .sort-select::after {
-  content: '';
+  content: '\25BC';
+  margin-left: 10px;
+  font-size: 12px;
   position: absolute;
-  top: 100px;
-  right: 10px;
+  top: 50%;
+  right: 20px;
   transform: translateY(-50%);
-  width: 30px; 
-  height: 30px; 
-  background-image: url('https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_arrow_drop_down_48px-512.png'); /* Online arrow image URL */
-  background-size: cover;
-  pointer-events: none; 
+  pointer-events: none;
+}
+
+
+.sort-select {
+  position: relative;
+  width: 200px;
 }
 
 .filter-menu {
@@ -73,7 +86,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 10px;
-  width: 100px;
+  width: 108px;
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

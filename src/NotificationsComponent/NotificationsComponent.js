@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import ItemDetails from '../ItemComponent/ItemDetails';
 import './notifications.css'; 
 
 const Notification = ({ items, bids }) => {
     const [notifications, setNotifications] = useState([]);
     const [auctionEndNotifications, setAuctionEndNotifications] = useState([]);
     const [isCheckCompleted, setIsCheckCompleted] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [notificationDrill, setNotificationDrill] = useState(false);
 
     useEffect(() => {
         setNotifications(items);
@@ -45,7 +48,7 @@ const Notification = ({ items, bids }) => {
                             return (
                                 (isWinner || isUserItem) && (
                                     <div key={index} className="notification">
-                                        <img className="upload-image" src={`data:${notification.image_type};base64,${notification.image}`} alt={`Item ${notification.item_id}`} />
+                                        <img className="upload-image" src={`data:${notification.image_type};base64,${notification.image}`} alt={`Item ${notification.item_id}`} onClick={()=> { return (setSelectedItem(notification), setNotificationDrill(true))}} />
                                         {isWinner && (
                                             <p>Congratulations! You have won the auction for this item.</p>
                                         )}
@@ -58,7 +61,7 @@ const Notification = ({ items, bids }) => {
                         })}
                         {auctionEndNotifications.map((item, index) => (
                             <div key={index} className="notification">
-                                <img className="upload-image" src={`data:${item.image_type};base64,${item.image}`} alt={`Item ${item.id}`} />
+                                <img className="upload-image" src={`data:${item.image_type};base64,${item.image}`} alt={`Item ${item.id}`} onClick={()=> { return (setSelectedItem(item), setNotificationDrill(true)) } }/>
                                 <p>The auction for this item you bid on has ended.</p>
                             </div>
                         ))}
@@ -72,6 +75,12 @@ const Notification = ({ items, bids }) => {
                 <div className="notification">
                     <p>Loading notifications...</p>
                 </div>
+            )}
+            {selectedItem && (
+                <ItemDetails item={selectedItem} notification = {notificationDrill} onClose={() => {
+                    return(setSelectedItem(null), setNotificationDrill(false))
+                    }
+                } />
             )}
         </div>
     );

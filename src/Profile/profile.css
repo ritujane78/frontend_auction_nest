@@ -20,6 +20,7 @@
 
 .bid-item {
     display: flex;
+    cursor: pointer;
     width: 10%;
     height: 180px;
     flex-direction: column; 
@@ -31,6 +32,7 @@
 }
 .win-item {
     display: flex;
+    cursor: pointer;
     width: 10%;
     height: 180px;
     flex-direction: column; 
@@ -42,6 +44,7 @@
 }
 .upload-item {
     display: flex;
+    cursor: pointer;
     width: 10%;
     height: 150px;
     flex-direction: column; 

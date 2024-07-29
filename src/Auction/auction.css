@@ -8,6 +8,7 @@
 }
 
 .item-card {
+  cursor: pointer;
   border: 1px solid #ddd;
   background-color: white;
   margin: 25px 10px;

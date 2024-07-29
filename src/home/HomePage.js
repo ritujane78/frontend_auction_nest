@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ItemBrowse from '../Auction/ItemBrowse';
-import ItemSellPopup from '../Auction/ItemAuctionPopup';
+import ItemBrowse from '../Auction/AuctionItemBrowse';
+import ItemAuctionPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import Notification from '../NotificationsComponent/NotificationsComponent';
@@ -13,7 +13,7 @@ import './home.css';
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
     const [signinSuccess, setSigninSuccess] = useState(false);
-    const [showSellPopup, setShowSellPopup] = useState(false);
+    const [showAuctionPopup, setShowAuctionPopup] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -29,7 +29,7 @@ function HomePage() {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
 
-    const categories = ["pants", "tshirt", "dress", "skirt", "jacket", "others"];
+    const categories = ["pants", "tshirt", "dress", "skirt", "jacket","sweater", "others"];
     const sizes = ["xs", "s", "m", "l", "xl", "n/a"];
 
     const donatedItemBrowseRef = useRef();
@@ -99,17 +99,13 @@ function HomePage() {
                     "Content-Type": "application/json"
                 },
             });
-            console.log(`response = ${response}` );
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const bidsDB = await response.json();
             const sortedBidsArray = Object.entries(bidsDB)
                 .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
-            console.log("home");
-                console.log(sortedBidsArray);
             setBids(sortedBidsArray);
-            console.log(bids);
         } catch (err) {
             setMessageAlert('Error fetching bids.');
             setShowAlert(true);
@@ -140,12 +136,12 @@ function HomePage() {
         setShowSigninPopup(true);
     };
 
-    const handleSellClick = () => {
-        setShowSellPopup(true);
+    const handleAuctionClick = () => {
+        setShowAuctionPopup(true);
     };
 
-    const handleSellClosePopup = () => {
-        setShowSellPopup(false);
+    const handleAuctionClosePopup = () => {
+        setShowAuctionPopup(false);
     };
 
     const handleSigninClosePopup = () => {
@@ -195,7 +191,7 @@ function HomePage() {
 
     const handleItemSaved = () => {
         fetchItems();
-        setShowSellPopup(false);
+        setShowAuctionPopup(false);
     };
 
     const handleLogoutClick = () => {
@@ -237,7 +233,7 @@ function HomePage() {
                     <>
                         <div className='left-buttons'>
                             <Link id='click-text' to="/profile" state={{items , bids}}>Profile</Link>
-                            <p id="click-text" onClick={handleSellClick}>Upload</p>
+                            <p id="click-text" onClick={handleAuctionClick}>Upload</p>
                         </div>
                         <div className='right-buttons'>
                             <div className='notification-container'>
@@ -256,9 +252,9 @@ function HomePage() {
                     <p id='click-text' onClick={handleSigninClick}>Sign in</p>
                 )}
             </div>
-            <ItemSellPopup
-                show={showSellPopup}
-                onClose={handleSellClosePopup}
+            <ItemAuctionPopup
+                show={showAuctionPopup}
+                onClose={handleAuctionClosePopup}
                 onItemSaved={handleItemSaved}
             />
             <SigninPopup

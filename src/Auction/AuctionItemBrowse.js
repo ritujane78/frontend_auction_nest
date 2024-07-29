@@ -1,5 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
 import AlertDialog from '../AlertDialog/AlertDialog';
+import ItemDetails from '../ItemComponent/ItemDetails';
 import '../main.css';
 import './auction.css';
 
@@ -9,6 +10,8 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
     const [messageAlert, setMessageAlert] = useState('');
     const [loadingData, setLoadingData] = useState(true);
     const [errorData, setErrorData] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null); 
+
 
     const fetchItems = useCallback(async () => {
         try {
@@ -148,7 +151,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         <div>
             <div id="items-container">
                 {sortedAndTimedItems.map(itemData => (
-                    <div key={itemData.id} className="item-card">
+                    <div key={itemData.id} className="item-card" onClick={() => setSelectedItem(itemData)}>
                         <h3 className='timer'>{itemData.days}D:{itemData.hours}H:{itemData.minutes}M</h3>
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} />
                         <p className='description' title={itemData.description}>
@@ -182,6 +185,9 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                     />
                 )}
             </div>
+            {selectedItem && (
+                <ItemDetails item={selectedItem} onClose={() => setSelectedItem(null)} />
+            )}
         </div>
     );
 });

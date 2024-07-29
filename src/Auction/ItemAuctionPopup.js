@@ -3,7 +3,7 @@ import AlertDialog from '../AlertDialog/AlertDialog';
 import './auction.css';
 import '../popup.css';
 
-const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
+const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
@@ -196,4 +196,4 @@ const ItemSellPopup = ({show, onClose,  onItemSaved}) => {
         </div>
     )
 };
-export default ItemSellPopup;
+export default ItemAuctionPopup;

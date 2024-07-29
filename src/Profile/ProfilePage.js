@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import LogoComponent from "../LogoComponent/LogoComponent";
 import { formatDate } from "../utils";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
+import ItemDetails from "../ItemComponent/ItemDetails";
 import './profile.css';
 
 const ProfilePage = () => {
@@ -15,7 +16,8 @@ const ProfilePage = () => {
     const [sortedBids, setSortedBids] = useState([]);
     const [loading, setLoading] = useState({ profile: true, uploads: true, bids: true, wins: true });
     const [error, setError] = useState({ profile: null, uploads: null, bids: null, wins: null });
-
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
 
@@ -124,7 +126,7 @@ const ProfilePage = () => {
             <div className="uploads-container">
                 {userUploads.length > 0 ? (
                     userUploads.map(upload => (
-                        <div className="upload-item" key={`upload_${upload.id}`}>
+                        <div className="upload-item" key={`upload_${upload.id}`} onClick = {() => setSelectedItem(upload)}>
                             <div className="image-container">
                                 <img className="upload-image" src={`data:${upload.image_type};base64,${upload.image}`} alt={`Item ${upload.item_id}`} />
                                 {upload.isDonated === "true" && <span className="donated-tag">DONATED</span>}
@@ -149,7 +151,10 @@ const ProfilePage = () => {
                         const truncatedBidAmounts = bidAmounts.length > 15 ? `${bidAmounts.slice(0, 15)}...` : bidAmounts;
 
                         return (
-                            <div className="bid-item" key={`bid_${itemId}`}>
+                            <div className="bid-item" key={`bid_${itemId}`} onClick={()=> {
+                                return (setSelectedItem(bidData),setSelectedImage(bidData.itemDetails))
+                            }
+                                }>
                                 <div className="image-container">
                                     <img className="bid-image" src={`data:${bidData.itemDetails.image_type};base64,${bidData.itemDetails.image}`} alt={`Item ${itemId}`} />
                                 </div>
@@ -172,7 +177,7 @@ const ProfilePage = () => {
             <div className="wins-container">
                 {userWins.length > 0 ? (
                     userWins.map(win => (
-                        <div className="win-item" key={`win_${win.id}`}>
+                        <div className="win-item" key={`win_${win.id}`} onClick={()=> setSelectedItem(win)}>
                             <img className="win-image" src={`data:${win.image_type};base64,${win.image}`} alt={`Item ${win.item_id}`} />
                         <div className="win-details">
                             <div className="win-amounts">
@@ -192,6 +197,12 @@ const ProfilePage = () => {
                 onClose={handleCloseLogoutConfirm}
                 onConfirm={handleConfirmLogout}
             />
+            {selectedItem && (
+                <ItemDetails item={selectedItem} image = {selectedImage} onClose={() => {
+                    return(setSelectedItem(null), setSelectedImage(null))
+        }
+            } />
+            )}
         </div>
     );
 };
