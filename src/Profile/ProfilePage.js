@@ -126,9 +126,9 @@ const ProfilePage = () => {
             <div className="uploads-container">
                 {userUploads.length > 0 ? (
                     userUploads.map(upload => (
-                        <div className="upload-item" key={`upload_${upload.id}`} onClick = {() => setSelectedItem(upload)}>
+                        <div className="upload-item" key={`upload_${upload.id}`}>
                             <div className="image-container">
-                                <img className="upload-image" src={`data:${upload.image_type};base64,${upload.image}`} alt={`Item ${upload.item_id}`} />
+                                <img className="upload-image" src={`data:${upload.image_type};base64,${upload.image}`} alt={`Item ${upload.item_id}`} onClick = {() => setSelectedItem(upload)} />
                                 {upload.isDonated === "true" && <span className="donated-tag">DONATED</span>}
                             </div>
                             <div className="upload-details">
@@ -151,12 +151,12 @@ const ProfilePage = () => {
                         const truncatedBidAmounts = bidAmounts.length > 15 ? `${bidAmounts.slice(0, 15)}...` : bidAmounts;
 
                         return (
-                            <div className="bid-item" key={`bid_${itemId}`} onClick={()=> {
-                                return (setSelectedItem(bidData),setSelectedImage(bidData.itemDetails))
-                            }
-                                }>
+                            <div className="bid-item" key={`bid_${itemId}`} >
                                 <div className="image-container">
-                                    <img className="bid-image" src={`data:${bidData.itemDetails.image_type};base64,${bidData.itemDetails.image}`} alt={`Item ${itemId}`} />
+                                    <img className="bid-image" src={`data:${bidData.itemDetails.image_type};base64,${bidData.itemDetails.image}`} alt={`Item ${itemId}`} onClick={()=> {
+                                            return (setSelectedItem(bidData),setSelectedImage(bidData.itemDetails))
+                                            }
+                                        } />
                                 </div>
                                 <div className="bid-details">
                                     <div className="bid-amounts" title={bidAmounts}>
@@ -177,8 +177,8 @@ const ProfilePage = () => {
             <div className="wins-container">
                 {userWins.length > 0 ? (
                     userWins.map(win => (
-                        <div className="win-item" key={`win_${win.id}`} onClick={()=> setSelectedItem(win)}>
-                            <img className="win-image" src={`data:${win.image_type};base64,${win.image}`} alt={`Item ${win.item_id}`} />
+                        <div className="win-item" key={`win_${win.id}`} >
+                            <img className="win-image" src={`data:${win.image_type};base64,${win.image}`} alt={`Item ${win.item_id}`} onClick={()=> setSelectedItem(win)} />
                         <div className="win-details">
                             <div className="win-amounts">
                                 &pound;{win.final_price}

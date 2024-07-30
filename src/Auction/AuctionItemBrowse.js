@@ -151,9 +151,9 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         <div>
             <div id="items-container">
                 {sortedAndTimedItems.map(itemData => (
-                    <div key={itemData.id} className="item-card" onClick={() => setSelectedItem(itemData)}>
+                    <div key={itemData.id} className="item-card" >
                         <h3 className='timer'>{itemData.days}D:{itemData.hours}H:{itemData.minutes}M</h3>
-                        <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} />
+                        <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} onClick={() => setSelectedItem(itemData)}/>
                         <p className='description' title={itemData.description}>
                             {itemData.description.length > 21 ? `${itemData.description.slice(0, 21)}...` : itemData.description}</p>
                         <p>Size: {itemData.size}</p>

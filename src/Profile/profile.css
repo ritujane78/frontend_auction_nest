@@ -20,7 +20,6 @@
 
 .bid-item {
     display: flex;
-    cursor: pointer;
     width: 10%;
     height: 180px;
     flex-direction: column; 
@@ -32,7 +31,6 @@
 }
 .win-item {
     display: flex;
-    cursor: pointer;
     width: 10%;
     height: 180px;
     flex-direction: column; 
@@ -44,7 +42,6 @@
 }
 .upload-item {
     display: flex;
-    cursor: pointer;
     width: 10%;
     height: 150px;
     flex-direction: column; 
@@ -55,18 +52,8 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
 }
 
-.bid-image {
-    width: 150px;
-    height: 100px; 
-    object-fit: cover; 
-}
-
-.win-image {
-    width: 150px;
-    height: 100px; 
-    object-fit: cover; 
-}
-.upload-image {
+.bid-image, .win-image, .upload-image {
+    cursor: pointer;
     width: 150px;
     height: 100px; 
     object-fit: cover; 

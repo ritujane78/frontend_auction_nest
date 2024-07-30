@@ -15,7 +15,7 @@ const ItemDetails = ({ item, image, notification, onClose }) => {
         try {
             if (item.winner_id) {
                 
-                const response = await fetch(`/user/winningUser/${item.winner_id}`);
+                const response = await fetch(`/user/user/${item.winner_id}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
