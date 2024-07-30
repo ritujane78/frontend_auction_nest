@@ -94,7 +94,7 @@ function HomePage() {
                 return;
             }
 
-            const response = await fetch(`/profile/user/${user_id}/bids`, {
+            const response = await fetch(`/bid/user/${user_id}/bids`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json"

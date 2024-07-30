@@ -23,7 +23,7 @@ const ProfilePage = () => {
 
     const fetchUserInfoData = async () => {
         try {
-            const response = await fetch(`/profile/user/${userId}`);
+            const response = await fetch(`/user/user/${userId}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

@@ -12,7 +12,6 @@ const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCat
         } else {
             filterButton.textContent = 'Filter';
         }
-        console.log(filterSelected);
     }, [selectedCategories, selectedSizes]);
 
     const handleDropdownToggle = () => {
