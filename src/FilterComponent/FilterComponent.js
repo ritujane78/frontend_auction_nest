@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './filter.css';
 
 const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCategories, selectedSizes, setSelectedSizes }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    useEffect(() => {
+        const filterSelected = selectedCategories.length + selectedSizes.length;
+        const filterButton = document.querySelector('.filter-button');
+        if (filterSelected > 0) {
+            filterButton.textContent = `${filterSelected} selected`;
+        } else {
+            filterButton.textContent = 'Filter';
+        }
+        console.log(filterSelected);
+    }, [selectedCategories, selectedSizes]);
 
     const handleDropdownToggle = () => {
         setDropdownVisible(!dropdownVisible);

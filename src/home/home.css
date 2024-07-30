@@ -56,7 +56,7 @@
   background-color: #fff;
   cursor: pointer;
   position: relative;
-  width: 100px;
+  width: 120px;
 }
 
 .filter-button::after,
@@ -86,7 +86,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 10px;
-  width: 80px;
+  width: 100px;
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

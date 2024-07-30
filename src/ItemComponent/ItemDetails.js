@@ -3,7 +3,6 @@ import { formatDate } from '../utils';
 import './items.css';
 
 const ItemDetails = ({ item, image, notification, onClose }) => {
-    console.log(item);
     const [winnerInfo, setWinnerInfo] = useState({ name: '', email: '' });
 
     useEffect( ()=> {
