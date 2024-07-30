@@ -6,7 +6,7 @@
 .filter-button {
     background-color: white;
     border: 1px solid #ccc;
-    width: 120px;
+    width: 100px;
     padding: 10px 12px;
     font-size: 14px;
     cursor: pointer;
@@ -35,6 +35,7 @@
 
 .filter-section h4 {
     margin-top: 0;
+    font-size: 13px;
 }
 
 .filter-section label {

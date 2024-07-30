@@ -24,7 +24,7 @@ const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCat
 
     return (
         <div className="filter-dropdown">
-            <button onClick={handleDropdownToggle} className="filter-button">Filter None</button>
+            <button onClick={handleDropdownToggle} className="filter-button">Filter</button>
             {dropdownVisible && (
                 <div className="filter-menu">
                     <div className="filter-section">

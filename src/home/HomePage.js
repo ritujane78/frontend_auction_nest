@@ -79,6 +79,7 @@ function HomePage() {
             const data = await response.json();
             setItems(data);
             setNotifications(data);
+            // fetchWinnerDetails();
         } catch (error) {
             console.error('Error fetching items:', error);
             setMessageAlert('Error fetching items.');
@@ -106,11 +107,16 @@ function HomePage() {
             const sortedBidsArray = Object.entries(bidsDB)
                 .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
             setBids(sortedBidsArray);
+            // fetchWinnerDetails();
         } catch (err) {
             setMessageAlert('Error fetching bids.');
             setShowAlert(true);
         }
     };
+        
+    
+ 
+    
 
     const filterItems = () => {
         let filtered = items;
