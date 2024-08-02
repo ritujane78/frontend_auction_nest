@@ -25,6 +25,8 @@
     border-radius: 4px;
     padding: 10px;
     width: 100px;
+    overflow-y: scroll;
+    max-height: 200px;
     z-index: 1000;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -35,6 +37,7 @@
 
 .filter-section h4 {
     margin-top: 0;
+    margin-bottom: 0;
     font-size: 13px;
 }
 

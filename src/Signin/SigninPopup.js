@@ -53,6 +53,7 @@ const SigninPopup = ({ show, onClose, onSuccess }) => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        autoComplete="off"
                     />
                     <label>Password:</label>
                     <input
@@ -60,6 +61,7 @@ const SigninPopup = ({ show, onClose, onSuccess }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        autoComplete="new-password"
                     />
                     <button className="signin-button" type="submit">Sign In</button>
                 </form>

@@ -4,19 +4,21 @@ import './auction.css';
 import '../popup.css';
 
 const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
-    const [title, setTitle] = useState('');
+    const [brandName, setBrandName] = useState('');
     const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
-    const [startingPrice, setStartingPrice] = useState(' ');
-    const [isDonated, setIsDonated] = useState(' ');
+    const [startingPrice, setStartingPrice] = useState('');
+    const [isDonated, setIsDonated] = useState('');
     const [image, setImage] = useState(null);
     const [size, setSize] = useState('');
+    const [gender, setGender]= useState('');
     const [currentPrice, setCurrentPrice] = useState('');
     const [auctionMessage, setAuctionMessage] = useState('');
-    const [showAlert, setShowAlert] = useState(false);
+    const [showAlert, setShowAlert] = useState(false); 
     const [messageAlert, setMessageAlert] = useState('');
     const [auctionEnd, setAuctionEnd] = useState('');
     const [today, setToday] = useState('');
+    
 
     const minAuctionDate = () =>{
         const currentDate = new Date();
@@ -35,15 +37,18 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
       const handleUpload = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('title', title);
+        formData.append('brandName', brandName);
         formData.append('category', category);
         formData.append('description', description);
         formData.append('image', image);
         formData.append("startingPrice", startingPrice);
         formData.append("isDonated", isDonated);
         formData.append('size', size);
+        formData.append('gender', gender);
         formData.append('auctionEndDate', auctionEnd);
         formData.append('userId', localStorage.getItem('userId'));
+
+        console.log(formData);
 
         try {
             const response = await fetch('/item/upload', {
@@ -53,17 +58,19 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                     'Accept': 'application/json'
                 }
             });
+            console.log(response);
 
             const data = await response.json();
 
             if (response.status === 200) {
                 setAuctionMessage("Item Uploaded Successfully. Ready for auction.");
-                setTitle('');
+                setBrandName('');
                 setCategory('');
                 setDescription('');
                 setStartingPrice('');
                 setImage(null);
                 setSize('');
+                setGender('');
                 setCurrentPrice('');
                 setIsDonated('');
                 setAuctionEnd('');
@@ -96,12 +103,17 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     const handleSizeChange = (event) => {
         setSize(event.target.value);
     };
+    const handleGenderChange = (event) => {
+        setGender(event.target.value);
+    };
+
     const handleCloseClick = () => {
-        setTitle('');
+        setBrandName('');
         setDescription('');
         setStartingPrice('');
         setImage(null);
         setSize('');
+        setGender('');
         setCurrentPrice('');
         setIsDonated('');    
         setAuctionMessage('');
@@ -135,8 +147,8 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                             <option value="sweater">Sweater</option>
                             <option value="others">Others</option>
                         </select>
-                    <label htmlFor="title">Title:</label>
-                    <input type='text' name='title' id='title' value={title} onChange={(e) => setTitle(e.target.value)} required />
+                    <label htmlFor="brandName">Brand:</label>
+                    <input type='text' name='brandName' id='brandName' value={brandName} onChange={(e) => setBrandName(e.target.value)} required />
                     <label htmlFor="description">Description:</label>
                     <textarea name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
                     <p className="size-label">Size:</p>
@@ -165,6 +177,21 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                             <input type="radio" name="size" value="N/A" checked={size === 'N/A'} onChange={handleSizeChange}  required/>
                             N/A
                         </label>
+                    </div>
+                    <p>Gender:</p>
+                    <div className='radio-buttons'>
+                    <label className= 'margin-r'>
+                        <input type="radio" value="m" name="genderOption" checked={gender === 'm'} onChange={handleGenderChange} required />
+                        Male
+                    </label>
+                    <label className='margin-r'>
+                        <input type="radio" value="f" name="genderOption" checked={gender === 'f'} onChange={handleGenderChange} required />
+                        Female
+                    </label>
+                    <label>
+                        <input type="radio" value="u" name="genderOption" checked={gender === 'u'} onChange={handleGenderChange} required />
+                        Unisex
+                    </label>
                     </div>
                     <label htmlFor='StartingPrice'>Starting price:</label>
                     <input type='number' name="startingPrice" id='startingPrice' value = {startingPrice} onChange={(e)=> setStartingPrice(e.target.value)} required />

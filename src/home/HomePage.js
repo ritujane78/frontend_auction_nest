@@ -28,10 +28,16 @@ function HomePage() {
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
+    const [selectedGender, setSelectedGender] = useState([]);
 
     const categories = ["pants", "tshirt", "dress", "skirt", "jacket","sweater", "others"];
     const sizes = ["xs", "s", "m", "l", "xl", "n/a"];
-
+    const genderMap = [
+        { key: 'm', label: 'Male' },
+        { key: 'f', label: 'Female' },
+        { key: 'u', label: 'Unisex' }
+    ];
+    
     const donatedItemBrowseRef = useRef();
     const otherItemBrowseRef = useRef();
 
@@ -48,7 +54,7 @@ function HomePage() {
 
     useEffect(() => {
         filterItems();
-    }, [items, selectedCategories, selectedSizes]);
+    }, [items, selectedCategories, selectedSizes, selectedGender]);
 
     useEffect(() => {
         fetchItems();
@@ -128,12 +134,19 @@ function HomePage() {
         if (selectedSizes.length > 0) {
             filtered = filtered.filter(item => selectedSizes.includes(item.size.toLowerCase()));
         }
+        if (selectedGender.length > 0){
+            filtered = filtered.filter(item => {
+                const itemGenderKey = genderMap.find(g => g.key.toLowerCase() === item.gender.toLowerCase());
+                return selectedGender.includes(itemGenderKey.key);
+            });
+        }
         filtered = filtered
             .filter(item => {
                 const currentDate = new Date();
                 const auctionEndDate = new Date(item.auctionEnd);
                 return (currentDate < auctionEndDate);
             });
+
         setDonatedItems(filtered.filter(item => item.isDonated === "true"));
         setOtherItems(filtered.filter(item => item.isDonated === "false"));
     };
@@ -272,10 +285,13 @@ function HomePage() {
                 <FilterComponent
                     categories={categories}
                     sizes={sizes}
+                    genderMap = {genderMap}
                     selectedCategories={selectedCategories}
                     setSelectedCategories={setSelectedCategories}
                     selectedSizes={selectedSizes}
                     setSelectedSizes={setSelectedSizes}
+                    selectedGender = {selectedGender}
+                    setSelectedGender = {setSelectedGender}
                 />
                 <div className='sort-select'>
                     <select onChange={handleSortChange}>

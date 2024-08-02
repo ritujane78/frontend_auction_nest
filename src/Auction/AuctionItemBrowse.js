@@ -153,12 +153,13 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                 {sortedAndTimedItems.map(itemData => (
                     <div key={itemData.id} className="item-card" >
                         <h3 className='timer'>{itemData.days}D:{itemData.hours}H:{itemData.minutes}M</h3>
-                        <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.title} onClick={() => setSelectedItem(itemData)}/>
-                        <p className='description' title={itemData.description}>
-                            {itemData.description.length > 21 ? `${itemData.description.slice(0, 21)}...` : itemData.description}</p>
+                        <p className='category'>{itemData.category.toUpperCase()}</p>
+                        <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.brandName} onClick={() => setSelectedItem(itemData)}/>
+                        {/* <p className='description' title={itemData.description}>
+                            {itemData.description.length > 21 ? `${itemData.description.slice(0, 21)}...` : itemData.description}</p> */}
                         <p>Size: {itemData.size}</p>
                         <div className='bids'>
-                            <p>Starting price: &pound;{itemData.startingPrice}</p>
+                            {/* <p>Starting price: &pound;{itemData.startingPrice}</p> */}
                             <p>Current Bid: &pound;{itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}</p>
                         </div>
                         <div className="inline-elements">

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import './filter.css';
 
-const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCategories, selectedSizes, setSelectedSizes }) => {
+const FilterComponent = ({ categories, sizes, genderMap, selectedCategories, setSelectedCategories, selectedSizes, setSelectedSizes, selectedGender, setSelectedGender }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     useEffect(() => {
-        const filterSelected = selectedCategories.length + selectedSizes.length;
+        const filterSelected = selectedCategories.length + selectedSizes.length + selectedGender.length;
         const filterButton = document.querySelector('.filter-button');
         if (filterSelected > 0) {
             filterButton.textContent = `${filterSelected} selected`;
         } else {
             filterButton.textContent = 'Filter';
         }
-    }, [selectedCategories, selectedSizes]);
+    }, [selectedCategories, selectedSizes, selectedGender]);
 
     const handleDropdownToggle = () => {
         setDropdownVisible(!dropdownVisible);
@@ -32,6 +32,14 @@ const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCat
         );
     };
 
+    const handleGenderChange = (event) => {
+        const { value, checked } = event.target;
+        console.log(value);
+        console.log(checked);
+        setSelectedGender(prev =>
+            checked ? [...prev, value] : prev.filter(gender => gender !== value)
+        );
+    };
     return (
         <div className="filter-dropdown">
             <button onClick={handleDropdownToggle} className="filter-button">Filter</button>
@@ -62,6 +70,20 @@ const FilterComponent = ({ categories, sizes, selectedCategories, setSelectedCat
                                     onChange={handleSizeChange}
                                 />
                                 {size}
+                            </label>
+                        ))}
+                    </div>
+                    <div className="filter-section">
+                        <h4>By Gender</h4>
+                        {genderMap.map(gender => (
+                            <label key={gender.key}>
+                                <input
+                                    type="checkbox"
+                                    value={gender.key}
+                                    checked={selectedGender.includes(gender.key)}
+                                    onChange={handleGenderChange}
+                                />
+                                {gender.label}
                             </label>
                         ))}
                     </div>

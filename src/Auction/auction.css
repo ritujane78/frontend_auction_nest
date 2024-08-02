@@ -13,7 +13,7 @@
   margin: 25px 10px;
   text-align: left;
   width: 226px;
-  height: 370px; 
+  height: 340px; 
   box-sizing: border-box;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -28,25 +28,24 @@
     cursor: pointer;
     max-width: 100%;
     max-height: 150px;
-    width: 80%;
-    height: 80%;
+    width: 90%;
+    height: 90%;
     display: block;
     margin: 0 auto 10px auto;
   }
-  
-  .item-card .description {
-    margin: 5px 10px;
-    color: #333;
-    font-size: 16px;
-    
+  .category{
+    font-weight: bold;
+    /* font-size: 16px !important; */
+    text-align: center;
   }
+  
   
   .item-card p {
     /* background-color: #aaa; */
     /* padding: 10px; */
     color: #333;
     margin: 5px 10px;
-    font-size: 14px;
+    font-size: 20px;
   }
   .timer {
     color: rgb(106, 4, 4);
@@ -54,6 +53,7 @@
     margin-top: -30px;
     font-size: 25px;
     text-align: center;
+    margin-bottom: 0px;
   }
 
   
@@ -67,11 +67,13 @@
   .inline-elements label {
     color: #333;
     margin-right: 5px;
+    font-size: 18px;
   }
   
   .inline-elements input[type="number"] {
     margin-right: 5px;
     width: 60%;
+    font-size: 18px;
   }
   
   .inline-elements button {
