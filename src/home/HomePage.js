@@ -24,7 +24,9 @@ function HomePage() {
     const [otherItems, setOtherItems] = useState([]);
     const [bidAmounts, setBidAmounts] = useState({});
     const [notifications, setNotifications] = useState([]);
-    const [showNotifications, setShowNotifications] = useState(false); // New state for showing notifications
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
@@ -54,7 +56,7 @@ function HomePage() {
 
     useEffect(() => {
         filterItems();
-    }, [items, selectedCategories, selectedSizes, selectedGender]);
+    }, [items, selectedCategories, selectedSizes, selectedGender, searchTerm]);
 
     useEffect(() => {
         fetchItems();
@@ -126,6 +128,11 @@ function HomePage() {
 
     const filterItems = () => {
         let filtered = items;
+
+
+        if (searchTerm) {
+            filtered = filtered.filter(item => item.category.toLowerCase().includes(searchTerm));
+        }
 
         if (selectedCategories.length > 0) {
             filtered = filtered.filter(item => selectedCategories.includes(item.category.toLowerCase()));
@@ -282,6 +289,13 @@ function HomePage() {
                 onSuccess={handleSigninSuccess}
             />
             <div className='selection-container'>
+            <input
+                type="text"
+                placeholder="Search by category..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+                className='search-bar'
+            />
                 <FilterComponent
                     categories={categories}
                     sizes={sizes}

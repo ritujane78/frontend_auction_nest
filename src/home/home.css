@@ -30,6 +30,13 @@
   box-sizing: border-box;
 }
 
+.search-bar {
+  padding: 10px;
+  margin-right: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 280px;
+}
 
 .sort-select select {
   appearance: none;
