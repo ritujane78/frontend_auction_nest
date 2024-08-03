@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, UNSAFE_ErrorResponseImpl, useNavigate } from 'react-router-dom';
 import LogoComponent from '../LogoComponent/LogoComponent';
 import './signup.css'
+import Footer from '../FooterComponent/FooterComponent';
 
 const SignupPage = ({ onSuccess }) => {
     const [username, setUsername] = useState('');
@@ -140,6 +141,7 @@ const SignupPage = ({ onSuccess }) => {
             </form>
             <div id="message">{message}</div>
         </div>
+        <Footer />
         </div>
     );
 };

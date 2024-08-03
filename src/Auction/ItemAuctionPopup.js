@@ -16,21 +16,43 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     const [auctionMessage, setAuctionMessage] = useState('');
     const [showAlert, setShowAlert] = useState(false); 
     const [messageAlert, setMessageAlert] = useState('');
-    const [auctionEnd, setAuctionEnd] = useState('');
     const [today, setToday] = useState('');
+    const [maxDate , setMaxDate] = useState('');
+    const [minTime, setMinTime] = useState('');
+    const [auctionEndDate, setAuctionEndDate] = useState('');
+    const [auctionEndTime, setAuctionEndTime] = useState('');
+    const [auctionEnd, setAuctionEnd] = useState('');
+
     
 
     const minAuctionDate = () =>{
         const currentDate = new Date();
-        const tomorrow = new Date(currentDate);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const year = tomorrow.getFullYear();
-        const month = String(tomorrow.getMonth() + 1).padStart(2, '0'); 
-        const day = String(tomorrow.getDate()).padStart(2, '0');
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+        const day = String(currentDate.getDate()).padStart(2, '0');
         setToday(`${year}-${month}-${day}`);
+    }
+    const maxAuctionDate = () =>{
+        const currentDate = new Date();
+        const futureDate = new Date(currentDate);
+        futureDate.setDate(futureDate.getDate() + 30);
+        const year = futureDate.getFullYear();
+        const month = String(futureDate.getMonth() + 1).padStart(2, '0'); 
+        const day = String(futureDate.getDate()).padStart(2, '0');
+        setMaxDate(`${year}-${month}-${day}`);
+    }
+    const minAuctionTime = () => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + 30);
+
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        setMinTime(`${hours}:${minutes}`);
     }
     useEffect(() => {
         minAuctionDate();
+        maxAuctionDate();
+        minAuctionTime();
       }, []);
 
 
@@ -48,7 +70,6 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         formData.append('auctionEndDate', auctionEnd);
         formData.append('userId', localStorage.getItem('userId'));
 
-        console.log(formData);
 
         try {
             const response = await fetch('/item/upload', {
@@ -105,6 +126,25 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     };
     const handleGenderChange = (event) => {
         setGender(event.target.value);
+    };
+
+    const handleDateChange = (e) => {
+        const date = e.target.value;
+        setAuctionEndDate(date);
+        setAuctionEnd(combineDateTime(date, auctionEndTime));
+    };
+
+    const handleTimeChange = (e) => {
+        const time = e.target.value;
+        setAuctionEndTime(time);
+        setAuctionEnd(combineDateTime(auctionEndDate, time));
+    };
+
+    const combineDateTime = (date, time) => {
+        if (date && time) {
+            return `${date}T${time}`;
+        }
+        return '';
     };
 
     const handleCloseClick = () => {
@@ -206,8 +246,34 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                         False
                     </label>
                     </div>
-                    <label htmlFor='auctionEnd'>Auction End Date:</label>
-                    <input type='date' name="auctionEnd" id='auctionEnd' value = {auctionEnd} min={today} onChange={(e)=> setAuctionEnd(e.target.value)} required />
+                    <label className='auction-end-label'>Auction End</label>
+                    <div className="auction-end-container">
+                        <div>
+                            <label htmlFor='auctionEndDate'>Date:</label>
+                            <input 
+                                type='date' 
+                                name="auctionEndDate" 
+                                id='auctionEndDate' 
+                                value={auctionEndDate} 
+                                min={today} 
+                                max={maxDate}  
+                                onChange={handleDateChange} 
+                                required 
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor='auctionEndTime'>Time:</label>
+                            <input 
+                                type='time' 
+                                name="auctionEndTime" 
+                                id='auctionEndTime' 
+                                min={minTime}
+                                value={auctionEndTime} 
+                                onChange={handleTimeChange} 
+                                required 
+                            />
+                        </div>
+                    </div>
                     <br/>
                     <button className="signin-button" type="submit">Submit</button>
                     <div id="auction-message">{auctionMessage}</div>

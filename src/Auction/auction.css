@@ -35,9 +35,29 @@
   }
   .category{
     font-weight: bold;
-    /* font-size: 16px !important; */
-    text-align: center;
+    font-size: 16px !important;
+    /* font-variant:small-caps !important; */
+    /* text-align: center; */
   }
+
+  .auction-end-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.auction-end-container label {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.auction-end-container input {
+    flex: 1;
+}
+.auction-end-label {
+  font-size: 18px;
+}
   
   
   .item-card p {

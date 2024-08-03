@@ -5,6 +5,7 @@ import { formatDate } from "../utils";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 import ItemDetails from "../ItemComponent/ItemDetails";
 import './profile.css';
+import Footer from "../FooterComponent/FooterComponent";
 
 const ProfilePage = () => {
     const location = useLocation();
@@ -203,6 +204,7 @@ const ProfilePage = () => {
         }
             } />
             )}
+            <Footer />
         </div>
     );
 };

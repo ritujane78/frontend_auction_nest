@@ -1,0 +1,20 @@
+.footer {
+    background-color: #eee;
+    /* padding: 10px 0; */
+    text-align: end;
+    border-top: 1px solid #eee;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-logo {
+    max-width: 200px;
+    height: auto;
+}

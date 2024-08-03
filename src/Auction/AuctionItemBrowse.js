@@ -51,6 +51,24 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         });
     };
 
+    
+        const handleEscKey = (event) => {
+            if (event.key === 'Escape') {
+                setSelectedItem(null);
+            }
+        };
+    
+        useEffect(() => {
+            if (selectedItem) {
+                document.addEventListener('keydown', handleEscKey);
+            } else {
+                document.removeEventListener('keydown', handleEscKey);
+            }
+            return () => {
+                document.removeEventListener('keydown', handleEscKey);
+            };
+        }, [selectedItem]);
+
     useEffect(() => {
         fetchItems();
     }, [fetchItems, bidAmounts]);
@@ -164,11 +182,8 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                         <h3 className='timer'>{itemData.days}{itemData.hours}{itemData.minutes}</h3>
                         <p className='category'>{itemData.category.toUpperCase()}</p>
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.brandName} onClick={() => setSelectedItem(itemData)}/>
-                        {/* <p className='description' title={itemData.description}>
-                            {itemData.description.length > 21 ? `${itemData.description.slice(0, 21)}...` : itemData.description}</p> */}
                         <p>Size: {itemData.size}</p>
                         <div className='bids'>
-                            {/* <p>Starting price: &pound;{itemData.startingPrice}</p> */}
                             <p>Current Bid: &pound;{itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}</p>
                         </div>
                         <div className="inline-elements">

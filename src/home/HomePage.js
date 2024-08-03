@@ -4,10 +4,11 @@ import ItemAuctionPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import Notification from '../NotificationsComponent/NotificationsComponent';
-import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal'; // Import the modal
+import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal';
 import { Link } from "react-router-dom";
 import LogoComponent from '../LogoComponent/LogoComponent';
-import FilterComponent from '../FilterComponent/FilterComponent';  // Import the FilterComponent
+import FilterComponent from '../FilterComponent/FilterComponent'; 
+import Footer from '../FooterComponent/FooterComponent';
 import './home.css';
 
 function HomePage() {
@@ -87,7 +88,6 @@ function HomePage() {
             const data = await response.json();
             setItems(data);
             setNotifications(data);
-            // fetchWinnerDetails();
         } catch (error) {
             console.error('Error fetching items:', error);
             setMessageAlert('Error fetching items.');
@@ -115,7 +115,6 @@ function HomePage() {
             const sortedBidsArray = Object.entries(bidsDB)
                 .sort(([, a], [, b]) => new Date(b.auctionEnd) - new Date(a.auctionEnd));
             setBids(sortedBidsArray);
-            // fetchWinnerDetails();
         } catch (err) {
             setMessageAlert('Error fetching bids.');
             setShowAlert(true);
@@ -291,7 +290,7 @@ function HomePage() {
             <div className='selection-container'>
             <input
                 type="text"
-                placeholder="Search by category..."
+                placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
                 className='search-bar'
@@ -332,6 +331,7 @@ function HomePage() {
                 onClose={handleCloseLogoutConfirm}
                 onConfirm={handleConfirmLogout}
             />
+            <Footer />
         </div>
     );
 }
