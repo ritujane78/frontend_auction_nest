@@ -32,7 +32,7 @@ const ItemDetails = ({ item, image, notification, onClose }) => {
         <div className="item-details">
             <div className="item-details-content">
                 <span className="close-button" onClick={onClose}>&times;</span>
-                <h2>{item.brandName} {item.category}</h2>
+                <h2>{item.brandName} {item.title?item.title:item.category}</h2>
                 <img className={notification ? 'notification-image' : 'enlarged-image'} src={`data:${image ? image.type : item.image_type};base64,${image ? image.image : item.image}`} alt={item.brandName} />
                 {notification && (
                     <>

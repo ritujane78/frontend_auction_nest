@@ -33,6 +33,7 @@ function HomePage() {
     const [selectedSizes, setSelectedSizes] = useState([]);
     const [selectedGender, setSelectedGender] = useState([]);
 
+
     const categories = ["pants", "tshirt", "dress", "skirt", "jacket","sweater", "others"];
     const sizes = ["xs", "s", "m", "l", "xl", "n/a"];
     const genderMap = [

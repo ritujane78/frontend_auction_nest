@@ -69,6 +69,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         formData.append('size', size);
         formData.append('gender', gender);
         formData.append('auctionEndDate', auctionEnd);
+        formData.append('title', title);
         formData.append('userId', localStorage.getItem('userId'));
 
 
@@ -95,6 +96,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                 setCurrentPrice('');
                 setIsDonated('');
                 setAuctionEnd('');
+                setOthers(false);
 
                 setTimeout(() => {
                     setAuctionMessage('');
@@ -125,7 +127,6 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     };
     const handleOthersCategoryChange = (event) => {
         setTitle(event.target.value);
-        setCategory(event.target.value);
     }
     const handleIsDonatedChange = (event) => {
         setIsDonated(event.target.value);
@@ -159,6 +160,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
 
     const handleCloseClick = () => {
         setBrandName('');
+        setCategory('');
         setDescription('');
         setStartingPrice('');
         setImage(null);
@@ -167,6 +169,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         setCurrentPrice('');
         setIsDonated('');    
         setAuctionMessage('');
+        setOthers(false);
         onClose();
     }
     
@@ -180,7 +183,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
 
     return (
         <div className="popup">
-            <div className="popup-content">
+            <div className="auction-popup-content">
                 <span className="close-btn" onClick={handleCloseClick}>&times;</span>
                 <h2>Item</h2>
                 <form className='signup-form' onSubmit={handleUpload}>

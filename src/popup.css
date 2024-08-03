@@ -14,11 +14,19 @@
     justify-content: center;
   }
   
-  .popup-content h1, .popup-content h2 {
+  .popup-content h1, .auction-popup-content h2 {
     text-align: center;
   }
   
 .popup-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+  }
+
+  .auction-popup-content{
     background-color: #fefefe;
     margin: 5% auto;
     padding: 20px;

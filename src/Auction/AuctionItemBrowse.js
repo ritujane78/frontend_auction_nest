@@ -184,7 +184,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                 {sortedAndTimedItems.map(itemData => (
                     <div key={itemData.id} className="item-card" >
                         <h3 className='timer'>{itemData.days}{itemData.hours}{itemData.minutes}</h3>
-                        <p className='category'>{itemData.category.toUpperCase()}</p>
+                        <p className='category'>{itemData.title? itemData.title.toUpperCase(): itemData.category.toUpperCase()}</p>
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.brandName} onClick={() => setSelectedItem(itemData)}/>
                         <p>Size: {itemData.size}</p>
                         <div className='bids'>
