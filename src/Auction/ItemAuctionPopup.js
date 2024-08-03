@@ -22,7 +22,8 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     const [auctionEndDate, setAuctionEndDate] = useState('');
     const [auctionEndTime, setAuctionEndTime] = useState('');
     const [auctionEnd, setAuctionEnd] = useState('');
-
+    const [others, setOthers] = useState('');
+    const [title, setTitle] = useState('');
     
 
     const minAuctionDate = () =>{
@@ -79,7 +80,6 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                     'Accept': 'application/json'
                 }
             });
-            console.log(response);
 
             const data = await response.json();
 
@@ -115,8 +115,18 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         return null;
     }
     const handleCategoryChange = (event) => {
-        setCategory(event.target.value);
+        if(event.target.value == "others"){
+            setOthers(true);
+        } else{
+            setOthers(false);
+        }
+            setCategory(event.target.value);
+        
     };
+    const handleOthersCategoryChange = (event) => {
+        setTitle(event.target.value);
+        setCategory(event.target.value);
+    }
     const handleIsDonatedChange = (event) => {
         setIsDonated(event.target.value);
       };
@@ -172,7 +182,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         <div className="popup">
             <div className="popup-content">
                 <span className="close-btn" onClick={handleCloseClick}>&times;</span>
-                <h1>Item</h1>
+                <h2>Item</h2>
                 <form className='signup-form' onSubmit={handleUpload}>
                     <label htmlFor="image">Select image to upload:</label>
                     <input type="file" name="image" id="image" onChange={(e) => setImage(e.target.files[0])} required />
@@ -187,6 +197,12 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                             <option value="sweater">Sweater</option>
                             <option value="others">Others</option>
                         </select>
+                    {others && (
+                        <>
+                        <label htmlFor="brandName">Title:</label>
+                        <input type='text' name='title' id='title' value={title} onChange={handleOthersCategoryChange} required />
+                        </>
+                    )}
                     <label htmlFor="brandName">Brand:</label>
                     <input type='text' name='brandName' id='brandName' value={brandName} onChange={(e) => setBrandName(e.target.value)} required />
                     <label htmlFor="description">Description:</label>

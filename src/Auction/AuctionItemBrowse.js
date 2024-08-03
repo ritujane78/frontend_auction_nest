@@ -44,7 +44,11 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                     item.hours = '';
                 }
                 if(minutes <= 0){
+                    item.hours = hours + 'H'
                     item.minutes = '';
+                }
+                if(hours<=0 && minutes <=0){
+                    item.days = days + 'D'
                 }
             }
             return item;

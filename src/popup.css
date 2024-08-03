@@ -14,7 +14,7 @@
     justify-content: center;
   }
   
-  .popup-content h1 {
+  .popup-content h1, .popup-content h2 {
     text-align: center;
   }
   
@@ -24,6 +24,8 @@
     padding: 20px;
     border: 1px solid #888;
     width: 20%;
+    height: 100%;
+    overflow-y: auto;
   }
   
   .close-btn {
