@@ -131,8 +131,12 @@ function HomePage() {
 
 
         if (searchTerm) {
-            filtered = filtered.filter(item => item.category.toLowerCase().includes(searchTerm));
+            filtered = filtered.filter(item => 
+                item.category.toLowerCase().includes(searchTerm) || 
+                item.title?.toLowerCase().includes(searchTerm)
+            );
         }
+        
 
         if (selectedCategories.length > 0) {
             filtered = filtered.filter(item => selectedCategories.includes(item.category.toLowerCase()));
