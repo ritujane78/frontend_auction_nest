@@ -13,6 +13,45 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
     const [selectedItem, setSelectedItem] = useState(null); 
 
 
+    const handleSortChange = useCallback((sortType, itemsToSort = localItems) => {
+        const sizeOrder = ["xs", "s", "m", "l", "xl", "n/a"];
+        let sortedItems = [...itemsToSort];
+        if (sortType === "byAuctionEnd") {
+            sortedItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
+        } else if (sortType === "byCurrentBidHToL") {
+            sortedItems.sort((a, b) => {
+                const bidA = a.currentPrice || 0;
+                const bidB = b.currentPrice || 0;
+                if (bidA === 0 && bidB === 0) {
+                    return parseFloat(b.startingPrice) - parseFloat(a.startingPrice);
+                } else if (bidA === 0) {
+                    return bidB - parseFloat(a.startingPrice);
+                } else if (bidB === 0) {
+                    return parseFloat(a.startingPrice) - bidA;
+                } else {
+                    return bidB - bidA;
+                }
+            });
+        } else if (sortType === "byCurrentBidLToH") {
+            sortedItems.sort((a, b) => {
+                const bidA = a.currentPrice || 0;
+                const bidB = b.currentPrice || 0;
+                if (bidA === 0 && bidB === 0) {
+                    return parseFloat(a.startingPrice) - parseFloat(b.startingPrice);
+                } else if (bidA === 0) {
+                    return parseFloat(a.startingPrice) - bidB;
+                } else if (bidB === 0) {
+                    return bidA - parseFloat(b.startingPrice);
+                } else {
+                    return bidA - bidB;
+                }
+            });
+        } else if (sortType === "bySize") {
+            sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
+        }
+        setLocalItems(sortedItems);
+    },[localItems]);
+
     const fetchItems = useCallback(async () => {
         try {
             setLocalItems(items);
@@ -23,7 +62,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         } finally {
             setLoadingData(false);
         }
-    }, [sortType, items]);
+    }, [sortType, items, handleSortChange]);
 
     const showTimer = (itemsList) => {
         return itemsList.map(item => {
@@ -132,45 +171,8 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         setShowAlert(false);
     };
 
-    const sizeOrder = ["xs", "s", "m", "l", "xl", "n/a"];
 
-    const handleSortChange = (sortType, itemsToSort = localItems) => {
-        let sortedItems = [...itemsToSort];
-        if (sortType === "byAuctionEnd") {
-            sortedItems.sort((a, b) => new Date(a.auctionEnd) - new Date(b.auctionEnd));
-        } else if (sortType === "byCurrentBidHToL") {
-            sortedItems.sort((a, b) => {
-                const bidA = a.currentPrice || 0;
-                const bidB = b.currentPrice || 0;
-                if (bidA === 0 && bidB === 0) {
-                    return parseFloat(b.startingPrice) - parseFloat(a.startingPrice);
-                } else if (bidA === 0) {
-                    return bidB - parseFloat(a.startingPrice);
-                } else if (bidB === 0) {
-                    return parseFloat(a.startingPrice) - bidA;
-                } else {
-                    return bidB - bidA;
-                }
-            });
-        } else if (sortType === "byCurrentBidLToH") {
-            sortedItems.sort((a, b) => {
-                const bidA = a.currentPrice || 0;
-                const bidB = b.currentPrice || 0;
-                if (bidA === 0 && bidB === 0) {
-                    return parseFloat(a.startingPrice) - parseFloat(b.startingPrice);
-                } else if (bidA === 0) {
-                    return parseFloat(a.startingPrice) - bidB;
-                } else if (bidB === 0) {
-                    return bidA - parseFloat(b.startingPrice);
-                } else {
-                    return bidA - bidB;
-                }
-            });
-        } else if (sortType === "bySize") {
-            sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
-        }
-        setLocalItems(sortedItems);
-    };
+
 
     const sortedAndTimedItems = showTimer(localItems);
     const userId = localStorage.getItem("userId");
@@ -195,15 +197,15 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                             <input
                                 type="number"
                                 min={itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}
-                                placeholder={`${itemData.user_id == userId ? ' 🛇' : `min. £${(itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice) + 0.5}`}`}
+                                placeholder={`${itemData.user_id === Number(userId) ? ' 🛇' : `min. £${(itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice) + 0.5}`}`}
                                 id={`bid-${itemData.id}`}
                                 name={`bid-${itemData.id}`}
                                 value={bidAmounts[itemData.id] || ''}
                                 onChange={(e) => handleBidChange(itemData.id, e.target.value)}
                                 required
-                                disabled={itemData.user_id == userId}
+                                disabled={itemData.user_id === Number(userId)}
                             />
-                            <button type="button" onClick={() => handleBidSubmit(itemData.id)} disabled={itemData.user_id == userId}>Go</button>
+                            <button type="button" onClick={() => handleBidSubmit(itemData.id)} disabled={itemData.user_id === Number(userId)}>Go</button>
                         </div>
                     </div>
                 ))}

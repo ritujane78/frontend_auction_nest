@@ -5,28 +5,26 @@ import './items.css';
 const ItemDetails = ({ item, image, notification, onClose }) => {
     const [winnerInfo, setWinnerInfo] = useState({ name: '', email: '' });
 
-    useEffect( ()=> {
+    useEffect(() => {
+        const fetchWinner = async () => {
+            try {
+                if (item.winner_id) {
+                    const response = await fetch(`/user/user/${item.winner_id}`);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const user = await response.json();
+                    setWinnerInfo({ name: user.name, email: user.email });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+    
         if (!item) return null;
         fetchWinner();
-    },[item]);
-
-    const fetchWinner = async ()=>{
-        try {
-            if (item.winner_id) {
-                
-                const response = await fetch(`/user/user/${item.winner_id}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const user = await response.json();
-                setWinnerInfo({ name: user.name, email: user.email });
-            }
-
-    } catch (err) {
-        console.error(err);
-    }
-    }
+    }, [item]); 
+    
 
     return (
         <div className="item-details">
