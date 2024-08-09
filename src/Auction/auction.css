@@ -12,7 +12,7 @@
   background-color: white;
   margin: 25px 10px;
   text-align: left;
-  width: 226px;
+  width: 233px;
   height: 365px; 
   box-sizing: border-box;
   border-radius: 8px;
@@ -28,9 +28,9 @@
     cursor: pointer;
     max-width: 100%;
     width: auto;
-    height: 135px;
+    height: 146px;
     display: block;
-    margin: 0 auto 10px auto;
+    margin: 0 auto 0 auto;
     object-fit: cover;
   }
   .category{
