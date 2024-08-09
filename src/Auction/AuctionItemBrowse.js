@@ -46,6 +46,10 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                     return bidA - bidB;
                 }
             });
+        } else if (sortType==="byBidsHtoL"){
+            sortedItems.sort((a,b) => parseInt(b.bid_count) - parseInt(a.bid_count));
+        } else if (sortType==="byBidsLtoH"){
+            sortedItems.sort((a,b) => parseInt(a.bid_count) - parseInt(b.bid_count));
         } else if (sortType === "bySize") {
             sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
         }
@@ -184,13 +188,14 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                         <h3 className='timer'>{itemData.days}{itemData.hours}{itemData.minutes}</h3>
                         <p className='category'>{itemData.title? itemData.title.toUpperCase(): itemData.category.toUpperCase()}</p>
                         <img src={`data:${itemData.type};base64,${itemData.image}`} alt={itemData.brandName} onClick={() => setSelectedItem(itemData)}/>
-                        <p>Size: {itemData.size}</p>
+                        <p className='itemSize'>Size: {itemData.size}</p>
                         <div className='bids'>
                             <p>Current Bid: &pound;{itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}</p>
-                        </div>
-                        <div className='bids'>
                             <p>Bid(s): {itemData.bid_count}</p>
                         </div>
+                        {/* <div className='bids'>
+                            <p>Bid(s): {itemData.bid_count}</p>
+                        </div> */}
                         <div className="inline-elements">
                             <label htmlFor={`bid-${itemData.id}`}>Bid:</label>
                             <input

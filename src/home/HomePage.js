@@ -314,6 +314,8 @@ function HomePage() {
                         <option value="byAuctionEnd">By Auction End Time</option>
                         <option value="byCurrentBidHToL">By Current Bid (H to L)</option>
                         <option value="byCurrentBidLToH">By Current Bid (L to H)</option>
+                        <option value="byBidsHtoL">By # of Bids (H to L)</option>
+                        <option value="byBidsLtoH">By # of Bids (L to H)</option>
                         <option value="bySize">By Size</option>
                     </select>
                 </div>
