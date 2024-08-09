@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AlertDialog from '../AlertDialog/AlertDialog';
 import './auction.css';
 import '../popup.css';
 
@@ -12,13 +11,9 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
     const [image, setImage] = useState(null);
     const [size, setSize] = useState('');
     const [gender, setGender]= useState('');
-    const [currentPrice, setCurrentPrice] = useState('');
     const [auctionMessage, setAuctionMessage] = useState('');
-    const [showAlert, setShowAlert] = useState(false); 
-    const [messageAlert, setMessageAlert] = useState('');
     const [today, setToday] = useState('');
     const [maxDate , setMaxDate] = useState('');
-    const [minTime, setMinTime] = useState('');
     const [auctionEndDate, setAuctionEndDate] = useState('');
     const [auctionEndTime, setAuctionEndTime] = useState('');
     const [auctionEnd, setAuctionEnd] = useState('');
@@ -28,9 +23,11 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
 
     const minAuctionDate = () =>{
         const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
-        const day = String(currentDate.getDate()).padStart(2, '0');
+        const futureDate = new Date(currentDate);
+        futureDate.setDate(futureDate.getDate() + 1);
+        const year = futureDate.getFullYear();
+        const month = String(futureDate.getMonth() + 1).padStart(2, '0'); 
+        const day = String(futureDate.getDate()).padStart(2, '0');
         setToday(`${year}-${month}-${day}`);
     }
     const maxAuctionDate = () =>{
@@ -42,18 +39,9 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         const day = String(futureDate.getDate()).padStart(2, '0');
         setMaxDate(`${year}-${month}-${day}`);
     }
-    const minAuctionTime = () => {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + 30);
-
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        setMinTime(`${hours}:${minutes}`);
-    }
     useEffect(() => {
         minAuctionDate();
         maxAuctionDate();
-        minAuctionTime();
       }, []);
 
 
@@ -93,10 +81,12 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                 setImage(null);
                 setSize('');
                 setGender('');
-                setCurrentPrice('');
                 setIsDonated('');
                 setAuctionEnd('');
                 setOthers(false);
+                setTitle('');
+                setAuctionEndDate('');
+                setAuctionEndTime('');
 
                 setTimeout(() => {
                     setAuctionMessage('');
@@ -117,7 +107,7 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         return null;
     }
     const handleCategoryChange = (event) => {
-        if(event.target.value == "others"){
+        if(event.target.value === "others"){
             setOthers(true);
         } else{
             setOthers(false);
@@ -166,21 +156,15 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
         setImage(null);
         setSize('');
         setGender('');
-        setCurrentPrice('');
         setIsDonated('');    
         setAuctionMessage('');
         setOthers(false);
+        setTitle('');
+        setAuctionEndDate('');
+        setAuctionEndTime('');
         onClose();
     }
     
-  const handleShowAlert = () => {
-    setShowAlert(true);
-  };
-
-  const handleCloseAlert = () => {
-    setShowAlert(false);
-  };
-
     return (
         <div className="popup">
             <div className="auction-popup-content">
@@ -286,7 +270,6 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                                 type='time' 
                                 name="auctionEndTime" 
                                 id='auctionEndTime' 
-                                min={minTime}
                                 value={auctionEndTime} 
                                 onChange={handleTimeChange} 
                                 required 
@@ -297,12 +280,6 @@ const ItemAuctionPopup = ({show, onClose,  onItemSaved}) => {
                     <button className="signin-button" type="submit">Submit</button>
                     <div id="auction-message">{auctionMessage}</div>
                 </form>
-                {showAlert && (
-                    <AlertDialog 
-                        message= {messageAlert}
-                        onClose={handleCloseAlert} 
-                    />
-            )}
             </div>
 
         </div>

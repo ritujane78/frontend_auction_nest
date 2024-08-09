@@ -13,7 +13,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
     const [selectedItem, setSelectedItem] = useState(null); 
 
 
-    const handleSortChange = useCallback((sortType, itemsToSort = localItems) => {
+    const handleSortChange = useCallback((sortType, itemsToSort) => {
         const sizeOrder = ["xs", "s", "m", "l", "xl", "n/a"];
         let sortedItems = [...itemsToSort];
         if (sortType === "byAuctionEnd") {
@@ -50,12 +50,12 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
             sortedItems.sort((a, b) => sizeOrder.indexOf(a.size.toLowerCase()) - sizeOrder.indexOf(b.size.toLowerCase()));
         }
         setLocalItems(sortedItems);
-    },[localItems]);
+    },[]);
 
     const fetchItems = useCallback(async () => {
         try {
-            setLocalItems(items);
-            handleSortChange(sortType, items);
+            const itemsToSort = [...items];
+            handleSortChange(sortType, itemsToSort);
         } catch (error) {
             console.error(`Error fetching data`, error);
             setErrorData("Error fetching data");
@@ -170,10 +170,6 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
     const handleCloseAlert = () => {
         setShowAlert(false);
     };
-
-
-
-
     const sortedAndTimedItems = showTimer(localItems);
     const userId = localStorage.getItem("userId");
 
@@ -191,6 +187,9 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                         <p>Size: {itemData.size}</p>
                         <div className='bids'>
                             <p>Current Bid: &pound;{itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}</p>
+                        </div>
+                        <div className='bids'>
+                            <p>Bid(s): {itemData.bid_count}</p>
                         </div>
                         <div className="inline-elements">
                             <label htmlFor={`bid-${itemData.id}`}>Bid:</label>

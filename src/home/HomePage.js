@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ItemBrowse from '../Auction/AuctionItemBrowse';
 import ItemAuctionPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
@@ -10,6 +10,12 @@ import LogoComponent from '../LogoComponent/LogoComponent';
 import FilterComponent from '../FilterComponent/FilterComponent'; 
 import Footer from '../FooterComponent/FooterComponent';
 import './home.css';
+
+const genderMap = [
+    { key: 'm', label: 'Male' },
+    { key: 'f', label: 'Female' },
+    { key: 'u', label: 'Unisex' }
+];
 
 function HomePage() {
     const [showSigninPopup, setShowSigninPopup] = useState(false);
@@ -36,11 +42,7 @@ function HomePage() {
 
     const categories = ["pants", "tshirt", "dress", "skirt", "jacket","sweater", "others"];
     const sizes = ["xs", "s", "m", "l", "xl", "n/a"];
-    const genderMap = [
-        { key: 'm', label: 'Male' },
-        { key: 'f', label: 'Female' },
-        { key: 'u', label: 'Unisex' }
-    ];
+
     
     const donatedItemBrowseRef = useRef();
     const otherItemBrowseRef = useRef();
@@ -56,12 +58,48 @@ function HomePage() {
         }
     }, [signinSuccess]);
 
+    const filterItems = useCallback(() => {
+        let filtered = items;
+
+
+        if (searchTerm) {
+            filtered = filtered.filter(item => 
+                item.category.toLowerCase().includes(searchTerm) || 
+                item.title?.toLowerCase().includes(searchTerm)
+            );
+        }    
+
+        if (selectedCategories.length > 0) {
+            filtered = filtered.filter(item => selectedCategories.includes(item.category.toLowerCase()));
+        }
+
+        if (selectedSizes.length > 0) {
+            filtered = filtered.filter(item => selectedSizes.includes(item.size.toLowerCase()));
+        }
+        if (selectedGender.length > 0){
+            filtered = filtered.filter(item => {
+                const itemGenderKey = genderMap.find(g => g.key.toLowerCase() === item.gender.toLowerCase());
+                return selectedGender.includes(itemGenderKey.key);
+            });
+        }
+        filtered = filtered
+            .filter(item => {
+                const currentDate = new Date();
+                const auctionEndDate = new Date(item.auctionEnd);
+                return (currentDate < auctionEndDate);
+            });
+
+        setDonatedItems(filtered.filter(item => item.isDonated === "true"));
+        setOtherItems(filtered.filter(item => item.isDonated === "false"));
+    },[items, selectedCategories, selectedSizes, selectedGender, searchTerm]);
+
     useEffect(() => {
         filterItems();
-    }, [items, selectedCategories, selectedSizes, selectedGender, searchTerm]);
+    }, [items, selectedCategories, selectedSizes, selectedGender, searchTerm, filterItems]);
 
     useEffect(() => {
         fetchItems();
+        fetchBidsData();
     }, [bidAmounts]);
 
 
@@ -121,47 +159,7 @@ function HomePage() {
             setShowAlert(true);
         }
     };
-        
     
- 
-    
-
-    const filterItems = () => {
-        let filtered = items;
-
-
-        if (searchTerm) {
-            filtered = filtered.filter(item => 
-                item.category.toLowerCase().includes(searchTerm) || 
-                item.title?.toLowerCase().includes(searchTerm)
-            );
-        }
-        
-
-        if (selectedCategories.length > 0) {
-            filtered = filtered.filter(item => selectedCategories.includes(item.category.toLowerCase()));
-        }
-
-        if (selectedSizes.length > 0) {
-            filtered = filtered.filter(item => selectedSizes.includes(item.size.toLowerCase()));
-        }
-        if (selectedGender.length > 0){
-            filtered = filtered.filter(item => {
-                const itemGenderKey = genderMap.find(g => g.key.toLowerCase() === item.gender.toLowerCase());
-                return selectedGender.includes(itemGenderKey.key);
-            });
-        }
-        filtered = filtered
-            .filter(item => {
-                const currentDate = new Date();
-                const auctionEndDate = new Date(item.auctionEnd);
-                return (currentDate < auctionEndDate);
-            });
-
-        setDonatedItems(filtered.filter(item => item.isDonated === "true"));
-        setOtherItems(filtered.filter(item => item.isDonated === "false"));
-    };
-
     const handleSigninClick = () => {
         setShowSigninPopup(true);
     };

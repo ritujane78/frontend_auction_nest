@@ -22,7 +22,7 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
 
-    const fetchUserInfoData = async () => {
+    const fetchUserInfoData = useCallback(async () => {
         try {
             const response = await fetch(`/user/user/${userId}`);
             if (!response.ok) {
@@ -32,57 +32,77 @@ const ProfilePage = () => {
             setUserProfile(data);
         } catch (error) {
             console.error(`Error fetching data from user table:`, error);
-            setError(prev => ({ ...prev, ['profile']: `Error fetching data` }));
+            setError(prev => ({ ...prev, profile: `Error fetching data` }));
         } finally {
-            setLoading(prev => ({ ...prev, ['profile']: false }));
+            setLoading(prev => ({ ...prev, profile: false }));
         }
-    };
-    const fetchUploadsData = () => {
+    },[userId]);
+
+    const fetchUploadsData =useCallback(() => {
         if (!userId) {
             navigate('/');
         }
         try {
-            const uploads = items.filter(item => item.user_id == userId);
+            const uploads = items.filter(item => item.user_id === Number(userId));
             setUserUploads(uploads.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
         } catch (err) {
-            setError(prev => ({ ...prev, ['uploads']: "Error fetching data" }));
+            setError(prev => ({ ...prev, uploads: "Error fetching data" }));
         } finally {
-            setLoading(prev => ({ ...prev, ['uploads']: false }));
+            setLoading(prev => ({ ...prev, uploads: false }));
         }
-    };
+    }, [items,userId,navigate]);
 
-    const fetchBidsData = async () =>{
+    const fetchBidsData = useCallback(async () =>{
         if (!userId) {
             navigate('/');
         }
         try {
             setSortedBids(bids);
         } catch (err) {
-            setError(prev => ({ ...prev, ['bids']: "Error fetching data" }));
+            setError(prev => ({ ...prev, bids: "Error fetching data" }));
         } finally {
-            setLoading(prev => ({ ...prev, ['bids']: false }));
+            setLoading(prev => ({ ...prev, bids: false }));
         }
-    }
-    const fetchWinsData = () => {
+    }, [bids, userId, navigate]);
+
+    const fetchWinsData = useCallback(() => {
         if (!userId) {
             navigate('/');
         }
         try {
-            const wins = items.filter(item => item.winner_id == userId);
+            const wins = items.filter(item => item.winner_id === Number(userId));
             setUserWins(wins.sort((a, b) => new Date(b.auctionEnd) - new Date(a.auctionEnd)));
         } catch (err) {
-            setError(prev => ({ ...prev, ['wins']: "Error fetching data" }));
+            setError(prev => ({ ...prev, wins: "Error fetching data" }));
         } finally {
-            setLoading(prev => ({ ...prev, ['wins']: false }));
+            setLoading(prev => ({ ...prev, wins: false }));
         }
-    };
+    },[items,userId,navigate]);
 
     useEffect(() => {
         fetchUserInfoData();
         fetchUploadsData();
         fetchBidsData();
         fetchWinsData();
-    }, [userId]);
+    }, [userId,  fetchUserInfoData, fetchUploadsData, fetchBidsData, fetchWinsData]);
+
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            setSelectedItem(null);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedItem) {
+            document.addEventListener('keydown', handleEscKey);
+        } else {
+            document.removeEventListener('keydown', handleEscKey);
+        }
+        return () => {
+            document.removeEventListener('keydown', handleEscKey);
+        };
+    }, [selectedItem]);
+    
 
     const handleLogoutClick = () => {
         setShowLogoutConfirm(true);

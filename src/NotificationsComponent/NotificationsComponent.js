@@ -9,6 +9,23 @@ const Notification = ({ items, bids }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [notificationDrill, setNotificationDrill] = useState(false);
 
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape') {
+            setSelectedItem(null);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedItem) {
+            document.addEventListener('keydown', handleEscKey);
+        } else {
+            document.removeEventListener('keydown', handleEscKey);
+        }
+        return () => {
+            document.removeEventListener('keydown', handleEscKey);
+        };
+    }, [selectedItem]);
+
     useEffect(() => {
         setNotifications(items);
         checkNotifications(items, bids);
@@ -20,7 +37,7 @@ const Notification = ({ items, bids }) => {
 
         // Check for auction end notifications
         const endedAuctions = items.filter(item => {
-            const bidItem = bids.find(([id, _]) => id == item.id);
+            const bidItem = bids.find(([id, _]) => Number(id) === item.id);
             return bidItem && currentTime > new Date(item.auctionEnd);
         });
 
@@ -32,8 +49,8 @@ const Notification = ({ items, bids }) => {
     const userId = localStorage.getItem("userId");
 
     const hasNotifications = notifications.some(notification => {
-        const isWinner = notification.winner_id == userId && currentTime > new Date(notification.auctionEnd);
-        const isUserItem = notification.user_id == userId && currentTime > new Date(notification.auctionEnd);
+        const isWinner = notification.winner_id === Number(userId) && currentTime > new Date(notification.auctionEnd);
+        const isUserItem = notification.user_id === Number(userId) && currentTime > new Date(notification.auctionEnd);
         return isWinner || isUserItem;
     });
 
@@ -43,8 +60,8 @@ const Notification = ({ items, bids }) => {
                 hasNotifications || auctionEndNotifications.length > 0 ? (
                     <>
                         {notifications.map((notification, index) => {
-                            const isWinner = notification.winner_id == userId && currentTime > new Date(notification.auctionEnd);
-                            const isUserItem = notification.user_id == userId && currentTime > new Date(notification.auctionEnd);
+                            const isWinner = notification.winner_id === Number(userId) && currentTime > new Date(notification.auctionEnd);
+                            const isUserItem = notification.user_id === Number(userId) && currentTime > new Date(notification.auctionEnd);
                             return (
                                 (isWinner || isUserItem) && (
                                     <div key={index} className="notification">

@@ -7,7 +7,6 @@ const LogoutConfirmModal = ({ show, onClose, onConfirm }) => {
     return (
         <div className="modal-overlay">
             <div className="modal">
-                {/* <h2>Confirm Logout</h2> */}
                 <p>Are you sure you want to log out?</p>
                 <div className="modal-buttons">
                     <button onClick={onConfirm}>Yes</button>

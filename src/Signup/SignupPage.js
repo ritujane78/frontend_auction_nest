@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, UNSAFE_ErrorResponseImpl, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LogoComponent from '../LogoComponent/LogoComponent';
 import './signup.css'
 import Footer from '../FooterComponent/FooterComponent';
