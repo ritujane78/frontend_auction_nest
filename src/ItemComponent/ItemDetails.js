@@ -3,23 +3,10 @@ import { formatDate } from '../utils';
 import './items.css';
 
 const ItemDetails = ({ item, image, notification, onClose }) => {
-    const [userInfo, setUserInfo] = useState({ name: '', username: '' });
     const [showWinnerInfo, setShowWinnerInfo] = useState(false);
     const [bidHistory, setBidHistory] = useState([]);
 
     useEffect(() => {
-        const fetchUserOrBidder = async (some_id) => {
-            try {
-                const response = await fetch(`/user/user/${some_id}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const user = await response.json();
-                setUserInfo({ name: user.name, username: user.username });
-            } catch (err) {
-                console.error(err);
-            }
-        }; 
         const fetchBidsHistory = async(item_id) => {
             try {
                 const response = await fetch(`/bid/bids/${item_id}`, {
@@ -34,19 +21,16 @@ const ItemDetails = ({ item, image, notification, onClose }) => {
                 const data = await response.json();
                 setBidHistory(data);
 
-                // console.log(bidHistory);
             } catch(err) {
                 console.error(err);
             }
         }
 
         if (item.winner_id) {
-            fetchBidsHistory(item.id);
             setShowWinnerInfo(true);
-            fetchUserOrBidder(item.winner_id);
+            fetchBidsHistory(item.id);
         } else if (item.bidder_id) {
             fetchBidsHistory(item.id);
-            fetchUserOrBidder(item.bidder_id);
         }
 
         if (!item) return null;
@@ -68,9 +52,9 @@ const ItemDetails = ({ item, image, notification, onClose }) => {
                     <p><strong>Current Bid:</strong> &pound;{item.currentPrice ? item.currentPrice : item.startingPrice}</p>
                 )}
                 
-                {!notification && !item.winner_id && userInfo.name && (
+                {!notification && !item.winner_id &&  bidHistory.length > 0 &&(
                     <div className='bidder'>
-                        <p><strong>Current Highest Bidder:</strong> {userInfo.username}, {userInfo.name} <br /></p>
+                        <p><strong>Current Highest Bidder:</strong> {bidHistory[bidHistory.length-1].username}, {bidHistory[bidHistory.length-1].full_name}<br /></p>
                     </div>
                 )}
 
@@ -78,9 +62,9 @@ const ItemDetails = ({ item, image, notification, onClose }) => {
 
                 <p><strong>Final Bid:</strong>{item.final_price ? ' £' : ''}{item.final_price}</p>
 
-                {showWinnerInfo && userInfo.name && (
+                {showWinnerInfo && bidHistory.length > 0 && (
                     <div className='winner'>
-                        <p><strong>Winner:</strong> {userInfo.username}, {userInfo.name}</p>
+                        <p><strong>Winner:</strong> {bidHistory[bidHistory.length-1].username}, {bidHistory[bidHistory.length-1].full_name} </p>
                     </div>
                 )}
                     {bidHistory.length > 0  && (
