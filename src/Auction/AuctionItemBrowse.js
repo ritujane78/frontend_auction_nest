@@ -136,7 +136,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         const userId = localStorage.getItem("userId");
         const minBidAmount = document.getElementById(`bid-${itemId}`).min;
         if (bidAmount < parseInt(minBidAmount) + 0.5) {
-            setMessageAlert(`Please place a bid amount of at least \u00A3${parseInt(minBidAmount) + 0.5}`);
+            setMessageAlert(`Please place a bid amount of at least \u00A3${parseFloat(minBidAmount) + 0.5}`);
             setBidAmounts({
                 ...bidAmounts,
                 [itemId]: ''

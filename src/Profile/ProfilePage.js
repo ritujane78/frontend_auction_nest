@@ -89,6 +89,7 @@ const ProfilePage = () => {
     const handleEscKey = (event) => {
         if (event.key === 'Escape') {
             setSelectedItem(null);
+            setSelectedImage(null);
         }
     };
 

@@ -23,6 +23,21 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
 }
+.bid_history {
+    margin: 20px 0;
+}
+.bid_history .title {
+    margin: 10px 0;
+    font-size: 15px !important;
+}
+.bid_history p{
+    /* color: red; */
+    /* margin-left: 50px; */
+    font-size: 13px !important;
+    height: auto;
+    margin-bottom: 10px;
+    line-height: 1;
+}
 
 
 .close-button {
@@ -53,7 +68,7 @@
 }
 
 .item-details p {
-    margin: 20px !important;
+    /* margin: 20px !important; */
     text-wrap: break-word;
     max-width: 400px;
     font-size: 18px;
