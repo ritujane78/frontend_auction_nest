@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LogoComponent from '../LogoComponent/LogoComponent';
-import './signup.css'
 import Footer from '../FooterComponent/FooterComponent';
+import './signup.css'
 
 const SignupPage = ({ onSuccess }) => {
     const [username, setUsername] = useState('');

@@ -56,7 +56,7 @@
 .filter-button {
   display: flex;
   align-items: center;
-  justify-content: start; /* Align text to the start */
+  justify-content: start; 
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

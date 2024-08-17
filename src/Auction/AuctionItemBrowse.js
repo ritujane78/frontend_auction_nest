@@ -193,9 +193,6 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
                             <p>Current Bid: &pound;{itemData.currentPrice ? itemData.currentPrice : itemData.startingPrice}</p>
                             <p>Bid(s): {itemData.bid_count}</p>
                         </div>
-                        {/* <div className='bids'>
-                            <p>Bid(s): {itemData.bid_count}</p>
-                        </div> */}
                         <div className="inline-elements">
                             <label htmlFor={`bid-${itemData.id}`}>Bid:</label>
                             <input

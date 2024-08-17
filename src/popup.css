@@ -1,5 +1,5 @@
 .popup {
-    display: block; /* Change this to 'block' for testing purposes */
+    display: block; 
     position: fixed;
     z-index: 1;
     left: 0;

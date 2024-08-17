@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import LogoComponent from "../LogoComponent/LogoComponent";
 import { formatDate } from "../utils";
+import LogoComponent from "../LogoComponent/LogoComponent";
 import LogoutConfirmModal from "../LogoutConfirmModal/LogoutConfirmModal";
 import ItemDetails from "../ItemComponent/ItemDetails";
-import './profile.css';
 import Footer from "../FooterComponent/FooterComponent";
+import './profile.css';
 
 const ProfilePage = () => {
     const location = useLocation();

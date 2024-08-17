@@ -33,16 +33,13 @@ const Notification = ({ items, bids }) => {
 
     const checkNotifications = (items, bids) => {
         const currentTime = new Date();
-        // const userId = localStorage.getItem("userId");
-
-        // Check for auction end notifications
         const endedAuctions = items.filter(item => {
             const bidItem = bids.find(([id, _]) => Number(id) === item.id);
             return bidItem && currentTime > new Date(item.auctionEnd);
         });
 
         setAuctionEndNotifications(endedAuctions);
-        setIsCheckCompleted(true); // Indicate that the check is complete
+        setIsCheckCompleted(true); 
     };
 
     const currentTime = new Date();

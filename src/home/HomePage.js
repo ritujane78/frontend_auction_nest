@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Link } from "react-router-dom";
 import ItemBrowse from '../Auction/AuctionItemBrowse';
 import ItemAuctionPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import Notification from '../NotificationsComponent/NotificationsComponent';
 import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal';
-import { Link } from "react-router-dom";
 import LogoComponent from '../LogoComponent/LogoComponent';
 import FilterComponent from '../FilterComponent/FilterComponent'; 
 import Footer from '../FooterComponent/FooterComponent';

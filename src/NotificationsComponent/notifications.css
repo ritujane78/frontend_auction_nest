@@ -1,7 +1,7 @@
 .notifications-dropdown {
     position: absolute;
-    right: 0;  /* Adjust to position correctly */
-    top: 40px; /* Adjust to position correctly */
+    right: 0;  
+    top: 40px; 
     background-color: white;
     border: 1px solid #ccc;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
