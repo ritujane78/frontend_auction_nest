@@ -4,7 +4,7 @@ import ItemBrowse from '../Auction/AuctionItemBrowse';
 import ItemAuctionPopup from '../Auction/ItemAuctionPopup';
 import SigninPopup from '../Signin/SigninPopup';
 import AlertDialog from '../AlertDialog/AlertDialog';
-import Notification from '../NotificationsComponent/NotificationsComponent';
+import NotificationComponentII from '../NotificationsComponent/NotificationComponentII';
 import LogoutConfirmModal from '../LogoutConfirmModal/LogoutConfirmModal';
 import LogoComponent from '../LogoComponent/LogoComponent';
 import FilterComponent from '../FilterComponent/FilterComponent'; 
@@ -30,7 +30,8 @@ function HomePage() {
     const [donatedItems, setDonatedItems] = useState([]);
     const [otherItems, setOtherItems] = useState([]);
     const [bidAmounts, setBidAmounts] = useState({});
-    const [notifications, setNotifications] = useState([]);
+    const [allNotifications, setAllNotifications] = useState([]);
+    const [userNotifications, setUserNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -39,13 +40,13 @@ function HomePage() {
     const [selectedSizes, setSelectedSizes] = useState([]);
     const [selectedGender, setSelectedGender] = useState([]);
 
-
     const categories = ["pants", "tshirt", "dress", "skirt", "jacket","sweater", "others"];
     const sizes = ["xs", "s", "m", "l", "xl", "n/a"];
 
     
     const donatedItemBrowseRef = useRef();
     const otherItemBrowseRef = useRef();
+    const notificationRef = useRef();
 
     useEffect(() => {
         checkLoginStatus();
@@ -55,13 +56,12 @@ function HomePage() {
         if (signinSuccess) {
             fetchItems();
             fetchBidsData();
+            fetchNotications();
         }
     }, [signinSuccess]);
 
     const filterItems = useCallback(() => {
         let filtered = items;
-
-
         if (searchTerm) {
             filtered = filtered.filter(item => 
                 item.category.toLowerCase().includes(searchTerm) || 
@@ -126,7 +126,6 @@ function HomePage() {
             });
             const data = await response.json();
             setItems(data);
-            setNotifications(data);
         } catch (error) {
             console.error('Error fetching items:', error);
             setMessageAlert('Error fetching items.');
@@ -159,6 +158,38 @@ function HomePage() {
             setShowAlert(true);
         }
     };
+    const fetchNotications = async () => {
+        try {
+            const response = await fetch(`/notification/allNotifications`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const notifications = await response.json();
+            setAllNotifications(notifications);
+
+            const user_id = parseInt(localStorage.getItem('userId'));
+            if (notifications && user_id) {
+                const filteredUserNotifications = notifications
+                    .filter(notification => notification.user_id === Number(user_id))
+                setUserNotifications(filteredUserNotifications);
+            }
+        }catch(error){
+            console.error(error);
+        }
+
+        if (notificationRef.current) {
+            notificationRef.current();
+        }
+    }
+
+    const handleBidUpdate = useCallback(() => {
+        fetchNotications();
+    }, []);
     
     const handleSigninClick = () => {
         setShowSigninPopup(true);
@@ -179,7 +210,50 @@ function HomePage() {
     const handleSigninSuccess = () => {
         setSigninSuccess(true);
         setShowSigninPopup(false);
-    };
+    }; 
+    
+    const saveNotification = async(item_id, user_id, notificationMessage) => {
+
+        try {
+            const response = await fetch('notification/saveNotification', {
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    item_id: item_id,
+                    user_id: user_id,
+                    message: notificationMessage,
+                }),
+            })
+            if(response.ok){
+                console.log("Notification added successfully.");
+            }
+        }catch(err){
+            console.error(err);
+        }
+    }
+    const makeNotification = (item_id, user_id) => {
+        
+        let outbidNotificationSent = false;
+    
+        if (allNotifications) {
+            allNotifications.forEach(notification => {
+                if (notification.item_id === Number(item_id) && Number(user_id) !== notification.user_id) {
+                    if (!outbidNotificationSent) {
+                        saveNotification(item_id, notification.user_id, "Oh no! It looks like you've been outbid for this item, but there is still time left if you're interested.");
+                        outbidNotificationSent = true;
+                    }
+                }
+            });
+        }
+    
+        saveNotification(item_id, user_id, "You're in the lead! You currently have the highest bid.");
+
+        fetchNotications();
+    }
+    
+
 
     const handleBidSubmit = async (item_id, bidAmount) => {
         const user_id = parseInt(localStorage.getItem('userId'));
@@ -198,12 +272,14 @@ function HomePage() {
             });
 
             if (response.ok) {
+                makeNotification(item_id, user_id);
                 setMessageAlert("Bid Placed Successfully!");
                 handleShowAlert();
                 setBidAmounts({
                     ...bidAmounts,
                     [item_id]: bidAmount
                 });
+
                 return true;
             }
             setMessageAlert("Failed to Place Bid.");
@@ -216,6 +292,7 @@ function HomePage() {
             return false;
         }
     };
+
 
     const handleItemSaved = () => {
         fetchItems();
@@ -271,7 +348,7 @@ function HomePage() {
                                     alt='Notifications' 
                                     onClick={toggleNotifications}
                                 />
-                                {showNotifications && <Notification id='clickText' bids = {bids} items={notifications} />}
+                                {showNotifications && <NotificationComponentII id='clickText' notifications = {userNotifications} items={items} ref={notificationRef}/>}
                             </div>
                             <p id='click-text' onClick={handleLogoutClick}>Log out</p>
                         </div>
@@ -321,9 +398,9 @@ function HomePage() {
                 </div>
             </div>
             <p className='items-heading'>Donated Items</p>
-            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} sortType={sortType} items={donatedItems} bidAmounts={bidAmounts} setBidAmounts={setBidAmounts} />
+            <ItemBrowse ref={donatedItemBrowseRef} onBidSubmit={handleBidSubmit} sortType={sortType} items={donatedItems} bidAmounts={bidAmounts} setBidAmounts={setBidAmounts} onBidUpdate={handleBidUpdate}/>
             <p className='items-heading'>Others</p>
-            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} sortType={sortType} items={otherItems} bidAmounts={bidAmounts} setBidAmounts={setBidAmounts} />
+            <ItemBrowse ref={otherItemBrowseRef} onBidSubmit={handleBidSubmit} sortType={sortType} items={otherItems} bidAmounts={bidAmounts} setBidAmounts={setBidAmounts} onBidUpdate={handleBidUpdate}/>
 
             {showAlert && (
                 <AlertDialog

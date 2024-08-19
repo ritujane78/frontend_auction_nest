@@ -4,13 +4,20 @@ import ItemDetails from '../ItemComponent/ItemDetails';
 import '../main.css';
 import './auction.css';
 
-const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBidAmounts }, ref) => {
+const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBidAmounts, onBidUpdate }, ref) => {
     const [localItems, setLocalItems] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [messageAlert, setMessageAlert] = useState('');
     const [loadingData, setLoadingData] = useState(true);
     const [errorData, setErrorData] = useState(null);
     const [selectedItem, setSelectedItem] = useState(null); 
+
+    useEffect(() => {
+        if (onBidUpdate) {
+            onBidUpdate();
+        }
+    }, [bidAmounts, onBidUpdate]);
+
 
 
     const handleSortChange = useCallback((sortType, itemsToSort) => {
@@ -160,6 +167,7 @@ const ItemBrowse = forwardRef(({ onBidSubmit, sortType, items, bidAmounts, setBi
         }
         const success = await onBidSubmit(itemId, bidAmount);
         if (success) {
+            onBidUpdate();
             setBidAmounts({
                 ...bidAmounts,
                 [itemId]: ''

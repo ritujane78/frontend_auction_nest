@@ -38,6 +38,7 @@ const Notification = ({ items, bids }) => {
             return bidItem && currentTime > new Date(item.auctionEnd);
         });
 
+
         setAuctionEndNotifications(endedAuctions);
         setIsCheckCompleted(true); 
     };
