@@ -1,3 +1,32 @@
+# Frontend Auction (React)
+
+A frontend application for the **Online Auction Platform**, built with **React** , which connects to the [Backend Auction Node.js API](https://github.com/ritujane78/backend_auction_nest).  
+It allows users to browse auctions, place bids , and manage their accounts.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend Framework**: React (JavaScript/TypeScript)  
+- **State Management**: React Hooks / Context API (or Redux if included)  
+- **API Communication**: Axios / Fetch to interact with backend  
+
+---
+
+## 🚀 Features
+
+- **User Authentication**: Login & registration via backend API  
+- **Bidding System**: Place bids  
+- **User Dashboard**: Track owned auctions & bids  
+- **Responsive UI**: Works across desktop & mobile devices  
+
+## ⚙️ Installation & Setup
+
+1. **Clone the repository:**
+   git clone https://github.com/ritujane78/frontend_auction_nest.git
+   cd frontend_auction_nest
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
